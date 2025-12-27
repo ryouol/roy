@@ -78,9 +78,6 @@ const projects = [
   { name: "Squint Watch", tech: "Swift · SwiftUI · watchOS", description: "Apple Watch companion app" },
 ];
 
-// Timeline config
-const timelineStart = 2024;
-const timelineEnd = 2026.5;
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -142,14 +139,6 @@ export default function Home() {
     return direction === "next" ? "animate-fade-in-left" : "animate-fade-in-right";
   };
 
-  // Calculate bar position and width for timeline
-  const getBarPosition = (startYear: number, endYear: number) => {
-    const totalSpan = timelineEnd - timelineStart;
-    const left = ((startYear - timelineStart) / totalSpan) * 100;
-    const width = ((endYear - startYear) / totalSpan) * 100;
-    return { left: `${left}%`, width: `${Math.max(width, 3)}%` };
-  };
-
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-background">
       {/* Progress bar */}
@@ -183,7 +172,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Experience Slide - Timeline integrated */}
+            {/* Experience Slide */}
             {slide.type === "experience" && (
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -195,75 +184,28 @@ export default function Home() {
                   </h2>
                 </div>
 
-                {/* Timeline + Details integrated */}
-                <div className="space-y-6 pt-4">
-                  {experience.map((job, index) => {
-                    const barPos = getBarPosition(job.startYear, job.endYear);
-                    return (
-                      <div
-                        key={`${job.company}-${job.startDate}`}
-                        className="opacity-0 animate-fade-in-left"
-                        style={{ animationDelay: `${(index + 2) * 100}ms` }}
-                      >
-                        {/* Company header */}
-                        <div className="flex items-baseline justify-between mb-1">
-                          <div className="flex items-baseline gap-3">
-                            <span className="text-lg font-semibold">{job.company}</span>
-                            <span className="text-sm text-muted">{job.role}</span>
-                          </div>
-                          <span className="font-mono text-xs text-muted">{job.location}</span>
+                <div className="space-y-8 pt-4">
+                  {experience.map((job, index) => (
+                    <div
+                      key={`${job.company}-${job.startDate}`}
+                      className="opacity-0 animate-fade-in-left border-l border-border pl-6"
+                      style={{ animationDelay: `${(index + 2) * 100}ms` }}
+                    >
+                      <div className="flex items-baseline justify-between mb-1">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-lg font-semibold">{job.company}</span>
+                          <span className="text-sm text-muted">{job.role}</span>
                         </div>
-
-                        {/* Timeline bar */}
-                        <div className="relative h-6 bg-card rounded mb-2">
-                          {/* Year markers */}
-                          <div className="absolute inset-0 flex">
-                            {[2024, 2024.5, 2025, 2025.5, 2026, 2026.5].map((year) => {
-                              const pos = ((year - timelineStart) / (timelineEnd - timelineStart)) * 100;
-                              return (
-                                <div
-                                  key={year}
-                                  className="absolute h-full w-px bg-border"
-                                  style={{ left: `${pos}%` }}
-                                />
-                              );
-                            })}
-                          </div>
-                          {/* Bar */}
-                          <div
-                            className="absolute top-0 h-full bg-foreground rounded animate-grow-bar"
-                            style={{
-                              left: barPos.left,
-                              width: barPos.width,
-                              animationDelay: `${(index + 3) * 100}ms`,
-                            }}
-                          />
-                          {/* Date labels on bar */}
-                          <div 
-                            className="absolute top-0 h-full flex items-center px-2 text-xs font-mono text-background"
-                            style={{ left: barPos.left }}
-                          >
-                            {job.startDate} — {job.endDate}
-                          </div>
-                        </div>
-
-                        {/* Summary */}
-                        <p className="text-muted text-sm leading-relaxed max-w-2xl">
-                          {job.summary}
-                        </p>
+                        <span className="font-mono text-xs text-muted">{job.location}</span>
                       </div>
-                    );
-                  })}
-                </div>
-
-                {/* Timeline scale */}
-                <div 
-                  className="flex justify-between font-mono text-xs text-muted pt-4 border-t border-border opacity-0 animate-fade-in-left"
-                  style={{ animationDelay: '800ms' }}
-                >
-                  <span>2024</span>
-                  <span>2025</span>
-                  <span>2026</span>
+                      <p className="font-mono text-xs text-muted mb-2">
+                        {job.startDate} — {job.endDate}
+                      </p>
+                      <p className="text-muted text-sm leading-relaxed max-w-2xl">
+                        {job.summary}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
