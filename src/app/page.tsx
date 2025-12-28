@@ -386,7 +386,7 @@ export default function Home() {
                       </svg>
                     </div>
                   </a>
-                </div>
+        </div>
 
                 {/* Project 4: Backend Systems Work */}
                 <div className="opacity-0 animate-fade-in-left delay-500 relative z-20">
@@ -395,8 +395,8 @@ export default function Home() {
                     <div className="space-y-2">
                       <a 
                         href="https://github.com/ryouol/gRPCNvidia-Work" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors group pointer-events-auto"
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -404,8 +404,8 @@ export default function Home() {
                         </svg>
                         <span className="group-hover:underline">gRPCNvidia-Work</span>
                         <span className="text-xs text-muted">— gRPC server for NVIDIA Xavier AGX</span>
-                      </a>
-                      <a 
+          </a>
+          <a
                         href="https://github.com/ryouol/wla-distibutor" 
                         target="_blank" 
                         rel="noopener noreferrer"
@@ -435,14 +435,10 @@ export default function Home() {
                   <p className="font-mono text-xs text-muted uppercase tracking-wider opacity-0 animate-fade-in-left">
                     Contact
                   </p>
-                  <h2 className="text-3xl md:text-4xl font-semibold tracking-tight opacity-0 animate-fade-in-left delay-100">
-                    Let&apos;s connect
-                  </h2>
                 </div>
                 <div className="space-y-3 pt-4">
                   {[
                     { label: "Email", value: "r55luo@uwaterloo.ca", href: "mailto:r55luo@uwaterloo.ca" },
-                    { label: "Phone", value: "604-364-9996", href: "tel:604-364-9996" },
                     { label: "GitHub", value: "github.com/ryouol", href: "https://github.com/ryouol" },
                     { label: "LinkedIn", value: "linkedin.com/in/ee-royluo", href: "https://linkedin.com/in/ee-royluo" },
                   ].map((link, index) => (
