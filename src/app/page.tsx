@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface Slide {
   id: string;
@@ -72,17 +72,14 @@ const experience = [
   },
 ];
 
-const projects = [
-  { name: "Skynet", tech: "LangChain · FastAPI · Python", description: "AI agent for Tesla engineers" },
-  { name: "Robotaxi ML", tech: "Llama 3 · RAG · ChromaDB", description: "Campaign testing automation" },
-  { name: "Squint Watch", tech: "Swift · SwiftUI · watchOS", description: "Apple Watch companion app" },
-];
 
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"next" | "prev">("next");
+  const [modalVideo, setModalVideo] = useState<{ type: "local" | "loom"; src: string } | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const totalSlides = slides.length;
   const progress = ((currentSlide + 1) / totalSlides) * 100;
@@ -112,6 +109,15 @@ export default function Home() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Close modal on ESC
+      if (e.key === "Escape" && modalVideo) {
+        setModalVideo(null);
+        return;
+      }
+      
+      // Don't navigate when modal is open
+      if (modalVideo) return;
+      
       switch (e.key) {
         case "ArrowDown":
         case "ArrowRight":
@@ -130,7 +136,7 @@ export default function Home() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [nextSlide, prevSlide]);
+  }, [nextSlide, prevSlide, modalVideo]);
 
   const getAnimationClass = () => {
     if (isAnimating) {
@@ -147,8 +153,8 @@ export default function Home() {
       </div>
 
       {/* Main content */}
-      <main className="h-full w-full flex items-center overflow-y-auto">
-        <div className="w-full max-w-5xl mx-auto px-8 lg:px-16 py-24">
+      <main className="h-full w-full flex items-start overflow-y-auto">
+        <div className="w-full max-w-5xl mx-auto px-8 lg:px-16 py-16 mt-8">
           <div className={getAnimationClass()} key={currentSlide}>
             
             {/* Intro Slide */}
@@ -159,11 +165,17 @@ export default function Home() {
                 </p>
                 <h1 className="text-5xl md:text-7xl font-semibold tracking-tight opacity-0 animate-fade-in-left delay-100">
                   Roy Luo
-                </h1>
-                <p className="text-xl md:text-2xl text-muted max-w-lg leading-relaxed opacity-0 animate-fade-in-left delay-200">
-                  Electrical Engineering @ UWaterloo.<br />
-                  Building at the intersection of AI and product.
-                </p>
+          </h1>
+                <div className="space-y-4 opacity-0 animate-fade-in-left delay-200">
+                  <p className="text-lg text-muted max-w-xl leading-relaxed">
+                    Software engineer who likes to build scalable backend systems. 
+                    Currently interested in <span className="text-foreground">inference systems</span> and <span className="text-foreground">multimodal models</span>.
+                  </p>
+                  <p className="text-lg text-muted max-w-xl leading-relaxed">
+                    I study Electrical Engineering at the University of Waterloo and
+                    like to sail, ski, and mountain bike :)
+                  </p>
+                </div>
                 <div className="pt-8 opacity-0 animate-fade-in-left delay-300">
                   <p className="text-sm text-muted flex items-center gap-2">
                     press <span className="key">→</span> to continue
@@ -210,7 +222,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Projects Slide - Simple */}
+            {/* Projects Slide */}
             {slide.type === "projects" && (
               <div className="space-y-8">
                 <div className="space-y-2">
@@ -222,20 +234,196 @@ export default function Home() {
                   </h2>
                 </div>
 
-                <div className="space-y-6 pt-4">
-                  {projects.map((project, index) => (
-                    <div
-                      key={project.name}
-                      className="group opacity-0 animate-fade-in-left border-l-2 border-foreground pl-6 py-2"
-                      style={{ animationDelay: `${(index + 2) * 100}ms` }}
-                    >
-                      <div className="flex items-baseline gap-3 mb-1">
-                        <span className="text-xl font-semibold">{project.name}</span>
-                        <span className="font-mono text-xs text-muted">{project.tech}</span>
-                      </div>
-                      <p className="text-muted">{project.description}</p>
+                {/* Project 1: Polymarket for Startups */}
+                <div className="space-y-4 opacity-0 animate-fade-in-left delay-200 relative z-20">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-1">Polymarket for Startups</h3>
+                    <p className="text-sm text-muted max-w-2xl mb-2">
+                      Swipe left or right on startup ideas before knowing the company. Make bets and trade positions based on conviction.
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">React</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">TypeScript</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">Rust</span>
                     </div>
-                  ))}
+                  </div>
+                  <div 
+                    className="group relative bg-card rounded-lg overflow-hidden border border-border max-w-xl hover:border-foreground/20 transition-colors pointer-events-auto cursor-pointer"
+                    onClick={() => setModalVideo({ type: "local", src: "/LimitlessDemo.mp4" })}
+                    onMouseEnter={() => videoRef.current?.play()}
+                    onMouseLeave={() => {
+                      if (videoRef.current) {
+                        videoRef.current.pause();
+                        videoRef.current.currentTime = 0;
+                      }
+                    }}
+                  >
+                    {/* Placeholder */}
+                    <div className="aspect-video flex items-center justify-center bg-card group-hover:opacity-0 transition-opacity duration-300 absolute inset-0 z-10 pointer-events-none">
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                          <svg className="w-5 h-5 text-muted" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <p className="text-xs text-muted">Hover to preview · Click to expand</p>
+                      </div>
+                    </div>
+                    {/* Video */}
+                    <video 
+                      ref={videoRef}
+                      className="aspect-video w-full"
+                      muted
+                      playsInline
+                      loop
+                    >
+                      <source src="/LimitlessDemo.mp4" type="video/mp4" />
+                    </video>
+                  </div>
+                </div>
+
+                {/* Project 2: VC Fund OS */}
+                <div className="space-y-4 opacity-0 animate-fade-in-left delay-300 relative z-20">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-1">VC Fund OS</h3>
+                    <p className="text-sm text-muted max-w-2xl mb-2">
+                      End-to-end platform for venture capital: GP tools for fund management, LP investment portal, and portfolio company dashboards.
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">React</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">Golang</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">Python</span>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {/* Demo 1: GP Tools */}
+                    <div>
+                      <div className="mb-2">
+                        <span className="text-sm font-medium">GP Tools</span>
+                        <span className="text-xs text-muted ml-2">Deal flow & due diligence</span>
+                      </div>
+                      <div 
+                        className="group relative bg-card rounded-lg overflow-hidden border border-border hover:border-foreground/20 transition-colors pointer-events-auto cursor-pointer"
+                        onClick={() => setModalVideo({ type: "loom", src: "https://www.loom.com/embed/0ebacafae02c436b8324024a3a44bebc?autoplay=1" })}
+                      >
+                        <div className="aspect-video flex items-center justify-center bg-card group-hover:opacity-0 transition-opacity duration-300 absolute inset-0 z-10 pointer-events-none">
+                          <div className="text-center">
+                            <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                              <svg className="w-4 h-4 text-muted" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+                            <p className="text-xs text-muted">Hover to preview · Click to expand</p>
+                          </div>
+                        </div>
+                        <div className="aspect-video">
+                          <iframe 
+                            src="https://www.loom.com/embed/0ebacafae02c436b8324024a3a44bebc" 
+                            frameBorder="0" 
+                            allowFullScreen
+                            className="w-full h-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Demo 2: LP & Portco */}
+                    <div>
+                      <div className="mb-2">
+                        <span className="text-sm font-medium">LP Portal & Portco</span>
+                        <span className="text-xs text-muted ml-2">Robinhood for VC</span>
+                      </div>
+                      <div 
+                        className="group relative bg-card rounded-lg overflow-hidden border border-border hover:border-foreground/20 transition-colors pointer-events-auto cursor-pointer"
+                        onClick={() => setModalVideo({ type: "loom", src: "https://www.loom.com/embed/de3de4a9c1b4418a87f01c9119b38025?autoplay=1" })}
+                      >
+                        <div className="aspect-video flex items-center justify-center bg-card group-hover:opacity-0 transition-opacity duration-300 absolute inset-0 z-10 pointer-events-none">
+                          <div className="text-center">
+                            <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                              <svg className="w-4 h-4 text-muted" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+                            <p className="text-xs text-muted">Hover to preview · Click to expand</p>
+                          </div>
+                        </div>
+                        <div className="aspect-video">
+                          <iframe 
+                            src="https://www.loom.com/embed/de3de4a9c1b4418a87f01c9119b38025" 
+                            frameBorder="0" 
+                            allowFullScreen
+                            className="w-full h-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Project 3: Kalshi BTC */}
+                <div className="opacity-0 animate-fade-in-left delay-400 relative z-20">
+                  <a 
+                    href="https://github.com/ryouol/Kalshi-BTC" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block p-4 rounded-lg border border-border hover:border-foreground/20 transition-colors group pointer-events-auto"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1 group-hover:underline">Kalshi BTC Price Predictor</h3>
+                        <p className="text-sm text-muted mb-3">
+                          Real-time probability calculator for Kalshi BTC markets using 50k-path Monte Carlo simulations with Heston volatility and Merton jump diffusion models.
+                        </p>
+                        <div className="flex gap-2 flex-wrap">
+                          <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">Next.js</span>
+                          <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">TypeScript</span>
+                          <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">Rust</span>
+                          <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">WebAssembly</span>
+                        </div>
+                      </div>
+                      <svg className="w-5 h-5 text-muted flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </div>
+                  </a>
+                </div>
+
+                {/* Project 4: Backend Systems Work */}
+                <div className="opacity-0 animate-fade-in-left delay-500 relative z-20">
+                  <div className="p-4 rounded-lg border border-border">
+                    <h3 className="text-lg font-semibold mb-3">Backend Systems Work</h3>
+                    <div className="space-y-2">
+                      <a 
+                        href="https://github.com/ryouol/gRPCNvidia-Work" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors group pointer-events-auto"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span className="group-hover:underline">gRPCNvidia-Work</span>
+                        <span className="text-xs text-muted">— gRPC server for NVIDIA Xavier AGX</span>
+                      </a>
+                      <a 
+                        href="https://github.com/ryouol/wla-distibutor" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors group pointer-events-auto"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span className="group-hover:underline">wla-distributor</span>
+                        <span className="text-xs text-muted">— Distributed workload allocator</span>
+                      </a>
+                    </div>
+                    <div className="flex gap-2 flex-wrap mt-3">
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">C++</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">gRPC</span>
+                      <span className="px-2 py-0.5 text-xs rounded bg-foreground/5 border border-border">CUDA</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -261,8 +449,8 @@ export default function Home() {
                     <a
                       key={link.label}
                       href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
                       className="group flex items-center gap-4 opacity-0 animate-fade-in-left hover:pl-2 transition-all"
                       style={{ animationDelay: `${(index + 2) * 100}ms` }}
                     >
@@ -339,12 +527,63 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Click to advance */}
-      <button
-        onClick={nextSlide}
-        className="fixed inset-0 z-10 cursor-pointer focus:outline-none"
-        aria-label="Next slide"
-      />
+      {/* Click to advance - disabled on projects slide */}
+      {slide.type !== "projects" && (
+        <button
+          onClick={nextSlide}
+          className="fixed inset-0 z-10 cursor-pointer focus:outline-none"
+          aria-label="Next slide"
+        />
+      )}
+
+      {/* Video Modal */}
+      {modalVideo && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-8"
+          onClick={() => setModalVideo(null)}
+        >
+          {/* Close button */}
+          <button 
+            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            onClick={() => setModalVideo(null)}
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Video container */}
+          <div 
+            className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden bg-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {modalVideo.type === "local" ? (
+              <video 
+                className="w-full h-full"
+                controls
+                autoPlay
+                playsInline
+              >
+                <source src={modalVideo.src} type="video/mp4" />
+              </video>
+            ) : (
+              <iframe 
+                src={modalVideo.src}
+                frameBorder="0" 
+                allowFullScreen
+                allow="autoplay"
+                className="w-full h-full"
+              />
+            )}
+          </div>
+          
+          {/* ESC hint */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-sm flex items-center gap-2">
+            <span className="px-2 py-1 rounded bg-white/10 text-xs font-mono">ESC</span>
+            <span>to close</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
