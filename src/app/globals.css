@@ -1,172 +1,138 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #737373;
-  --border: #e5e5e5;
-  --accent: #0a0a0a;
-  --card: #fafafa;
+  --bg: #0b0e14;
+  --well: #10141d;
+  --ink: #e7eaf3;
+  --dim: #8e97ab;
+  --line: #1c2330;
+  --signal: #ffb454;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 3rem;
+}
+
+html.light {
+  --bg: #fbfbfd;
+  --well: #f2f2f7;
+  --ink: #1d1d1f;
+  --dim: #6e6e73;
+  --line: #e5e5ea;
+  --signal: #a15c07;
+}
+
+/* Konami easter egg: everything is token-driven, so one class
+   retunes the whole page to CRT phosphor. Must sit after .light. */
+html.phosphor {
+  --bg: #0a0804;
+  --well: #120e06;
+  --ink: #ffd9a0;
+  --dim: #b9852e;
+  --line: #2a2008;
+  --signal: #ffb454;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-card: var(--card);
-  --font-sans: var(--font-outfit);
-  --font-mono: var(--font-mono);
+  --color-bg: var(--bg);
+  --color-well: var(--well);
+  --color-ink: var(--ink);
+  --color-dim: var(--dim);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --font-mono: var(--font-plex);
 }
 
-* {
-  box-sizing: border-box;
+/* Anchor targets clear the fixed nav */
+section[id] {
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: 100%;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-instrument), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--signal);
+  color: var(--bg);
 }
 
-/* Animations */
-@keyframes fadeInLeft {
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+/* Page-load sequence (hero only) */
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: none;
   }
 }
 
-@keyframes fadeOutLeft {
-  from {
+.rise {
+  opacity: 0;
+  animation: rise 0.7s var(--ease-out) forwards;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+.reveal.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* Current-term indicator */
+@keyframes breathe {
+  0%,
+  100% {
     opacity: 1;
-    transform: translateX(0);
   }
-  to {
-    opacity: 0;
-    transform: translateX(-30px);
+  50% {
+    opacity: 0.3;
   }
 }
 
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
+.now-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--signal);
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .reveal {
+    animation: none;
+    transition: none;
     opacity: 1;
-    transform: translateX(0);
+    transform: none;
   }
-}
-
-@keyframes fadeOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0);
+  .now-dot {
+    animation: none;
   }
-  to {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-}
-
-@keyframes drawLine {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.animate-fade-in-left {
-  animation: fadeInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-out-left {
-  animation: fadeOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-in-right {
-  animation: fadeInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-out-right {
-  animation: fadeOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-draw-line {
-  animation: drawLine 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-}
-
-@keyframes drawLine {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-grow-bar {
-  animation: growBar 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  transform-origin: left;
-}
-
-@keyframes growBar {
-  from {
-    opacity: 1;
-    transform: scaleX(0);
-  }
-  to {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-}
-
-/* Stagger delays */
-.delay-0 { animation-delay: 0ms; }
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-
-/* Key indicator */
-.key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 11px;
-  font-family: var(--font-mono);
-  color: var(--muted);
-}
-
-/* Progress bar */
-.progress-bar {
-  background: var(--foreground);
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
