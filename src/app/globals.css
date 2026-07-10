@@ -469,6 +469,69 @@ html[data-stack-pinned] .site-nav {
   backdrop-filter: none;
 }
 
+/* ————— Depth rail ————— */
+.depth-rail {
+  position: fixed;
+  right: clamp(16px, calc((100vw - 720px) / 2 - 64px), 96px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+  pointer-events: none;
+}
+
+@media (min-width: 960px) {
+  .depth-rail {
+    display: flex;
+  }
+}
+
+.depth-rail[data-visible] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.depth-tick {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 32px;
+  padding: 8px 0 8px 8px;
+  cursor: pointer;
+}
+
+.depth-tick-mark {
+  width: 16px;
+  height: 1px;
+  background: color-mix(in srgb, var(--dim) 40%, transparent);
+  transition:
+    width 200ms var(--ease-out),
+    height 200ms var(--ease-out),
+    background-color 200ms var(--ease-out);
+}
+
+.depth-tick[data-current] .depth-tick-mark {
+  width: 24px;
+  height: 2px;
+  background: var(--signal);
+}
+
+.depth-tick-label {
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out);
+}
+
+.depth-rail:hover .depth-tick-label,
+.depth-tick:focus-visible .depth-tick-label,
+.depth-tick[data-current] .depth-tick-label {
+  opacity: 1;
+}
+
 /* Bedrock — the ledger's resting sheet after the descent */
 .bedrock-sheet {
   background: var(--panel-fill);

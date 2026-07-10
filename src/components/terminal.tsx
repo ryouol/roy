@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { links, sections, workHistory } from "@/lib/data";
+import { layers } from "@/lib/projects";
 import { applyTheme, togglePhosphor } from "./theme";
 
 interface Line {
@@ -18,6 +19,7 @@ uptime        time in industry
 work          jump to work
 projects      jump to projects
 contact       jump to contact
+<layer>       ${layers.map((l) => l.id).join(" · ")}
 open <site>   ${Object.keys(links).join(" · ")}
 theme <mode>  light · dark
 phosphor      you'll see
@@ -94,6 +96,12 @@ export function Terminal() {
     if (name === "top" || (sections as readonly string[]).includes(name)) {
       setOpen(false);
       document.getElementById(name)?.scrollIntoView();
+      return;
+    }
+
+    if (layers.some((l) => l.id === name)) {
+      setOpen(false);
+      window.dispatchEvent(new CustomEvent("stack:jump", { detail: name }));
       return;
     }
 

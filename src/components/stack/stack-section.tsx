@@ -29,6 +29,7 @@ import {
   segments,
 } from "@/lib/timeline";
 import { Atmosphere, ScrubbedAtmosphere } from "./atmosphere";
+import { DepthRail } from "./depth-rail";
 
 interface StackContextValue {
   camera: MotionValue<number>;
@@ -200,6 +201,13 @@ export function StackSection({ children }: { children: React.ReactNode }) {
           style={enhanced ? { height: `${TRAVEL_VH + 100}vh` } : undefined}
         >
           {enhanced ? <ScrubbedAtmosphere camera={camera} /> : <Atmosphere />}
+          {enhanced && (
+            <DepthRail
+              focusedDepth={focusedDepth}
+              pinned={pinned}
+              onJump={jumpTo}
+            />
+          )}
           <div
             ref={stageRef}
             className="stack-stage"
