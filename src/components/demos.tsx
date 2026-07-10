@@ -1,55 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-function Modal({
-  label,
-  onClose,
-  children,
-}: {
-  label: string;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  const closeRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={label}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-bg/90 p-4 backdrop-blur-sm sm:p-10"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-4xl overflow-hidden rounded-md border border-line bg-black"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-      <button
-        ref={closeRef}
-        onClick={onClose}
-        className="absolute right-5 top-5 font-mono text-xs text-dim transition-colors hover:text-ink"
-      >
-        esc — close
-      </button>
-    </div>
-  );
-}
+import { useRef, useState } from "react";
+import { Modal } from "./modal";
 
 export function VideoDemo({
   src,
