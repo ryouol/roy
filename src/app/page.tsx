@@ -40,46 +40,49 @@ export default function Home() {
       <SiteNav />
 
       {/* ————— Hero ————— */}
-      <header id="top" className="mx-auto max-w-[720px] px-6 pt-20 sm:pt-28">
-        <div className="rise flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-          <h1 className="text-display sm:text-[44px]">Roy Luo</h1>
-          <span className="flex items-center gap-4">
-            <LocalTime />
-            <ThemeToggle />
-          </span>
+      <header id="top" className="mx-auto max-w-[720px] px-6 pt-10 sm:pt-12">
+        <div className="rise flex items-center justify-between font-mono text-xs text-dim">
+          <LocalTime />
+          <ThemeToggle />
         </div>
-        <p
-          className="rise mt-1 text-[17px] text-dim"
-          style={{ animationDelay: "80ms" }}
-        >
-          Software engineer, currently at{" "}
-          <a
-            href={links.squint}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-signal"
+
+        <div className="mt-16 text-center sm:mt-20">
+          <h1 className="rise text-[44px] font-semibold leading-[1.02] tracking-[-0.022em] sm:text-[56px]">
+            Roy Luo
+          </h1>
+          <p
+            className="rise mt-3 text-[17px] text-dim sm:text-[18px]"
+            style={{ animationDelay: "80ms" }}
           >
-            Squint
-          </a>
-          .
-        </p>
+            Software engineer, currently at{" "}
+            <a
+              href={links.squint}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-signal"
+            >
+              Squint
+            </a>
+            .
+          </p>
 
-        <div
-          className="rise mt-6 flex flex-wrap gap-x-6 gap-y-2"
-          style={{ animationDelay: "160ms" }}
-        >
-          {contactLinks.map((link) => (
-            <ExternalLink key={link.label} href={link.href}>
-              {link.label}
-            </ExternalLink>
-          ))}
+          <div
+            className="rise mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2"
+            style={{ animationDelay: "160ms" }}
+          >
+            {contactLinks.map((link) => (
+              <ExternalLink key={link.label} href={link.href}>
+                {link.label}
+              </ExternalLink>
+            ))}
+          </div>
         </div>
 
-        <div className="rise mt-6" style={{ animationDelay: "240ms" }}>
+        <div className="rise mt-2" style={{ animationDelay: "240ms" }}>
           <StackFigure />
         </div>
 
-        <div className="rise mt-4" style={{ animationDelay: "320ms" }}>
+        <div className="rise" style={{ animationDelay: "320ms" }}>
           <div className="scroll-cue" aria-hidden />
           <p className="mt-4 text-center font-mono text-label uppercase">
             <span className="text-signal">01</span>

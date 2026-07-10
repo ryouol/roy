@@ -102,10 +102,15 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     }
     const track = trackRef.current;
     if (!track) return;
-    const io = new IntersectionObserver(([entry]) => {
-      setPinned(entry.isIntersecting);
-      root.toggleAttribute("data-stack-pinned", entry.isIntersecting);
-    });
+    // Trigger only once the track is genuinely entering the viewport, so the
+    // depth rail and will-change promotion don't fire while still in the hero.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setPinned(entry.isIntersecting);
+        root.toggleAttribute("data-stack-pinned", entry.isIntersecting);
+      },
+      { rootMargin: "0px 0px -55% 0px" }
+    );
     io.observe(track);
     return () => {
       io.disconnect();

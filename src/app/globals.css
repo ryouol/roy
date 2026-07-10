@@ -58,6 +58,7 @@
   --fig-hi: #232b3d;
   --fig-lo: #12161f;
   --fig-edge: rgba(231, 234, 243, 0.16);
+  --fig-glow: rgba(146, 168, 220, 0.16);
 }
 
 html.light {
@@ -101,6 +102,7 @@ html.light {
   --fig-hi: #ffffff;
   --fig-lo: #eaeef4;
   --fig-edge: rgba(29, 29, 31, 0.1);
+  --fig-glow: rgba(90, 110, 165, 0.09);
 }
 
 /* Konami easter egg: everything is token-driven, so one class
@@ -135,6 +137,7 @@ html.phosphor {
   --fig-hi: #241a09;
   --fig-lo: #120d05;
   --fig-edge: rgba(255, 217, 160, 0.16);
+  --fig-glow: rgba(255, 180, 84, 0.14);
 }
 
 @theme inline {
@@ -298,17 +301,17 @@ p {
    Real CSS 3D lives only here: static, decorative, no body text. */
 .figure-wrap {
   position: relative;
-  perspective: 1150px;
+  perspective: 1250px;
   perspective-origin: 50% 46%;
-  height: 340px;
+  height: 380px;
   display: grid;
   place-items: center;
 }
 
 .figure-group {
   position: relative;
-  width: 300px;
-  height: 190px;
+  width: 320px;
+  height: 200px;
   transform-style: preserve-3d;
   transform: rotateX(56deg) rotateZ(-34deg);
   transition: transform 400ms var(--ease-out);
@@ -316,24 +319,39 @@ p {
 
 @media (min-width: 640px) {
   .figure-wrap {
-    height: 380px;
+    height: 460px;
   }
   .figure-group {
-    width: 340px;
-    height: 220px;
+    width: 400px;
+    height: 250px;
   }
+}
+
+/* Ambient light pool — the stack sits in light, not flat black.
+   Cool core + a faint warm base (dusk leaking from the surface). */
+.figure-glow {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: 116%;
+  height: 96%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(closest-side at 50% 42%, var(--fig-glow), transparent 76%),
+    radial-gradient(64% 46% at 50% 72%, rgba(255, 180, 84, 0.06), transparent 74%);
+  pointer-events: none;
 }
 
 /* Soft cast beneath the stack — grounds it in space */
 .figure-shadow {
   position: absolute;
   left: 50%;
-  top: 60%;
-  width: 58%;
-  height: 110px;
+  top: 62%;
+  width: 56%;
+  height: 120px;
   transform: translate(-50%, -50%);
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
-  filter: blur(22px);
+  filter: blur(24px);
   pointer-events: none;
 }
 
@@ -413,6 +431,48 @@ p {
 }
 .figure-motif .mk-signal {
   fill: var(--signal);
+  filter: drop-shadow(0 0 4px var(--signal));
+  animation: sig-pulse 4.2s var(--ease-out) infinite;
+  animation-delay: 1.1s;
+}
+
+/* A signal ripples up the stack, arriving at each plane in sequence */
+.figure-motif .mk-ripple {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  r: 2.5;
+  opacity: 0;
+  animation: fig-ripple 4.2s var(--ease-out) infinite;
+  animation-delay: var(--d, 0s);
+}
+.figure-motif .mk-ripple.sig {
+  stroke: var(--signal);
+}
+
+@keyframes fig-ripple {
+  0% {
+    r: 2.5;
+    opacity: 0.5;
+  }
+  40% {
+    r: 17;
+    opacity: 0;
+  }
+  100% {
+    r: 17;
+    opacity: 0;
+  }
+}
+
+@keyframes sig-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  8% {
+    opacity: 1;
+  }
 }
 
 /* Scroll cue — a signal dot descending a hairline; labels, never instructs */
@@ -681,6 +741,14 @@ html[data-stack-pinned] .site-nav {
   }
   .figure-group {
     transition: none;
+  }
+  .figure-motif .mk-ripple {
+    animation: none;
+    opacity: 0;
+  }
+  .figure-motif .mk-signal {
+    animation: none;
+    opacity: 0.9;
   }
   /* Belt-and-braces: the traversal never enhances under reduced motion,
      but even if it did, planes must stay legible and still. */

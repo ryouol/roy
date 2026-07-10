@@ -18,6 +18,9 @@ function Motif({ layer }: { layer: LayerId }) {
     "aria-hidden": true,
   };
 
+  // A signal ripples up through the stack, arriving at each plane's thread
+  // point (210,88) in sequence: sense → coordinate → act. The staggered
+  // delays make it climb the stack.
   if (layer === "perception") {
     // Signal emerging from noise: a dim dot field, a few brighter along a
     // diagonal, brightest at the thread point.
@@ -37,6 +40,7 @@ function Motif({ layer }: { layer: LayerId }) {
           <circle key={`s${i}`} cx={x} cy={y} r={2} className="mk-mid" />
         ))}
         <circle cx={210} cy={88} r={3} className="mk-bright" />
+        <circle cx={210} cy={88} className="mk-ripple" style={{ ["--d" as string]: "0s" }} />
       </svg>
     );
   }
@@ -64,6 +68,7 @@ function Motif({ layer }: { layer: LayerId }) {
         {nodes.map(([x, y], i) => (
           <circle key={i} cx={x} cy={y} r={i === 3 ? 4 : 2.6} className={i === 3 ? "mk-bright" : "mk-mid"} />
         ))}
+        <circle cx={210} cy={88} className="mk-ripple" style={{ ["--d" as string]: "0.6s" }} />
       </svg>
     );
   }
@@ -77,6 +82,7 @@ function Motif({ layer }: { layer: LayerId }) {
         className="mk-line"
         fill="none"
       />
+      <circle cx={210} cy={88} className="mk-ripple sig" style={{ ["--d" as string]: "1.2s" }} />
       <circle cx={210} cy={88} r={4} className="mk-signal" />
     </svg>
   );
@@ -115,6 +121,7 @@ export function StackFigure() {
       onMouseLeave={onLeave}
       aria-hidden
     >
+      <div className="figure-glow" />
       <div className="figure-shadow" />
       <div ref={groupRef} className="figure-group">
         {layers.map((layer) => (
