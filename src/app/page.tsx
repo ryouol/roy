@@ -1,5 +1,6 @@
 import { LocalTime } from "@/components/clock";
 import { LoomDemo, VideoDemo } from "@/components/demos";
+import { Atmosphere } from "@/components/stack/atmosphere";
 import { EasterEggs } from "@/components/eggs";
 import { SiteNav } from "@/components/nav";
 import { Reveal } from "@/components/reveal";
@@ -74,6 +75,7 @@ function Project({
 export default function Home() {
   return (
     <div className="mx-auto max-w-[720px] px-6 pb-24 pt-20 sm:pt-28">
+      <Atmosphere />
       <SiteNav />
 
       {/* ————— Hero ————— */}

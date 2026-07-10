@@ -9,15 +9,89 @@
   --signal: #ffb454;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 3rem;
+
+  /* Atmosphere — three depth stops. All neutrals stay in the graphite
+     hue band; warmth only ever comes from --signal, and only at depth 0. */
+  --atmo0-hi: #0b0d12;
+  --atmo0-lo: #131110;
+  --atmo0-glow: rgba(255, 180, 84, 0.13);
+  --atmo1-hi: #0a0c11;
+  --atmo1-lo: #0c1018;
+  --atmo1-glow: rgba(142, 163, 214, 0.07);
+  --atmo2-hi: #05070d;
+  --atmo2-lo: #090d17;
+  --atmo2-glow: rgba(124, 144, 196, 0.1);
+
+  /* Depth tiers for unfocused planes (blur switches discretely, never scrubbed) */
+  --z1-blur: 5px;
+  --z1-sat: 0.6;
+  --z2-blur: 12px;
+  --z2-sat: 0.35;
+  --zpast-blur: 8px;
+  --zpast-sat: 0.8;
+
+  /* Plane material — translucent architectural glass */
+  --plane-hi: rgba(21, 26, 38, 0.72);
+  --plane-lo: rgba(13, 17, 26, 0.62);
+  --plane-brd: rgba(231, 234, 243, 0.08);
+  --plane-brd-btm: rgba(0, 0, 0, 0.35);
+  --plane-edge: rgba(231, 234, 243, 0.09);
+  --panel-fill: rgba(16, 20, 29, 0.55);
+  --panel-brd: rgba(231, 234, 243, 0.06);
+  --hairline: rgba(231, 234, 243, 0.07);
+  --grain-o: 0.03;
+
+  /* Elevation — layered ambient + key shadows */
+  --e1: 0 1px 0 0 rgba(0, 0, 0, 0.3), 0 2px 6px -1px rgba(0, 0, 0, 0.35),
+    0 10px 24px -8px rgba(0, 0, 0, 0.45);
+  --e2: 0 1px 0 0 rgba(0, 0, 0, 0.38), 0 6px 16px -4px rgba(0, 0, 0, 0.5),
+    0 24px 56px -16px rgba(0, 0, 0, 0.55);
+  --e3: 0 2px 4px rgba(0, 0, 0, 0.4), 0 16px 40px -8px rgba(0, 0, 0, 0.6),
+    0 48px 96px -24px rgba(0, 0, 0, 0.6);
+
+  /* Radius scale */
+  --r-ui: 6px;
+  --r-panel: 10px;
+  --r-plane: 18px;
 }
 
 html.light {
   --bg: #fbfbfd;
   --well: #f2f2f7;
   --ink: #1d1d1f;
-  --dim: #6e6e73;
+  /* one step darker than the old #6e6e73 — needed for AA on the deep haze */
+  --dim: #686870;
   --line: #e5e5ea;
   --signal: #a15c07;
+
+  /* Daylight haze: depth reads as milk, not murk.
+     Floor capped at #eef1f6 — signal fails AA past it. */
+  --atmo0-hi: #fbfbfd;
+  --atmo0-lo: #fcf9f5;
+  --atmo0-glow: rgba(161, 92, 7, 0.08);
+  --atmo1-hi: #f9fafc;
+  --atmo1-lo: #f4f5f8;
+  --atmo1-glow: rgba(110, 126, 160, 0.05);
+  --atmo2-hi: #f2f4f8;
+  --atmo2-lo: #eef1f6;
+  --atmo2-glow: rgba(255, 255, 255, 0.65);
+
+  --plane-hi: rgba(255, 255, 255, 0.72);
+  --plane-lo: rgba(255, 255, 255, 0.58);
+  --plane-brd: rgba(29, 29, 31, 0.08);
+  --plane-brd-btm: rgba(29, 29, 31, 0.1);
+  --plane-edge: rgba(255, 255, 255, 0.85);
+  --panel-fill: rgba(255, 255, 255, 0.66);
+  --panel-brd: rgba(29, 29, 31, 0.06);
+  --hairline: rgba(29, 29, 31, 0.07);
+  --grain-o: 0.02;
+
+  --e1: 0 1px 2px rgba(29, 29, 31, 0.05), 0 2px 6px -2px rgba(29, 29, 31, 0.06),
+    0 10px 24px -8px rgba(29, 29, 31, 0.1);
+  --e2: 0 1px 2px rgba(29, 29, 31, 0.06), 0 8px 20px -6px rgba(29, 29, 31, 0.1),
+    0 24px 48px -16px rgba(29, 29, 31, 0.12);
+  --e3: 0 2px 4px rgba(29, 29, 31, 0.08), 0 16px 40px -8px rgba(29, 29, 31, 0.14),
+    0 48px 96px -24px rgba(29, 29, 31, 0.16);
 }
 
 /* Konami easter egg: everything is token-driven, so one class
@@ -29,6 +103,25 @@ html.phosphor {
   --dim: #b9852e;
   --line: #2a2008;
   --signal: #ffb454;
+
+  /* Monochrome amber remap — colors only; tiers and shadows inherit. */
+  --atmo0-hi: #0b0803;
+  --atmo0-lo: #0c0903;
+  --atmo0-glow: rgba(255, 180, 84, 0.12);
+  --atmo1-hi: #0a0804;
+  --atmo1-lo: #0a0804;
+  --atmo1-glow: rgba(255, 180, 84, 0.06);
+  --atmo2-hi: #060502;
+  --atmo2-lo: #070502;
+  --atmo2-glow: rgba(185, 133, 46, 0.05);
+
+  --plane-hi: rgba(26, 20, 8, 0.72);
+  --plane-lo: rgba(16, 12, 5, 0.62);
+  --plane-brd: rgba(255, 217, 160, 0.08);
+  --plane-edge: rgba(255, 217, 160, 0.09);
+  --panel-fill: rgba(18, 14, 6, 0.55);
+  --panel-brd: rgba(255, 217, 160, 0.06);
+  --hairline: rgba(255, 217, 160, 0.07);
 }
 
 @theme inline {
@@ -39,6 +132,38 @@ html.phosphor {
   --color-line: var(--line);
   --color-signal: var(--signal);
   --font-mono: var(--font-plex);
+
+  --shadow-e1: var(--e1);
+  --shadow-e2: var(--e2);
+  --shadow-e3: var(--e3);
+  --radius-ui: var(--r-ui);
+  --radius-panel: var(--r-panel);
+  --radius-plane: var(--r-plane);
+
+  /* Type scale — mono is the system's voice, sans is the person's */
+  --text-display: 40px;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.022em;
+  --text-display--font-weight: 600;
+  --text-thesis: 26px;
+  --text-thesis--line-height: 1.2;
+  --text-thesis--letter-spacing: -0.015em;
+  --text-thesis--font-weight: 600;
+  --text-panel: 17px;
+  --text-panel--line-height: 1.35;
+  --text-panel--letter-spacing: -0.01em;
+  --text-panel--font-weight: 500;
+  --text-body: 15.5px;
+  --text-body--line-height: 1.6;
+  --text-meta: 13px;
+  --text-meta--line-height: 1.5;
+  --text-label: 12px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.18em;
+  --text-label--font-weight: 500;
+  --text-micro: 11px;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.08em;
 }
 
 /* Anchor targets clear the fixed nav */
@@ -72,6 +197,88 @@ p {
 :focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 3px;
+}
+
+/* ————— Atmosphere — fixed gradient field behind everything —————
+   Three depth stops cross-faded by opacity only (never gradient stops).
+   z-index -1 keeps them above the body background, below all content. */
+.atmo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.atmo-0 {
+  /* execution — dusk at the surface; the only amber in the atmosphere */
+  background:
+    radial-gradient(120% 70% at 50% 108%, var(--atmo0-glow) 0%, transparent 62%),
+    linear-gradient(180deg, var(--atmo0-hi) 0%, var(--atmo0-lo) 100%);
+}
+
+.atmo-1 {
+  /* infrastructure — the neutral graphite home */
+  background:
+    radial-gradient(110% 65% at 50% 112%, var(--atmo1-glow) 0%, transparent 60%),
+    linear-gradient(180deg, var(--atmo1-hi) 0%, var(--atmo1-lo) 100%);
+  opacity: 0;
+}
+
+.atmo-2 {
+  /* perception — the floor; faint light from above, like deep water */
+  background:
+    radial-gradient(130% 80% at 50% -25%, var(--atmo2-glow) 0%, transparent 65%),
+    linear-gradient(180deg, var(--atmo2-hi) 0%, var(--atmo2-lo) 100%);
+  opacity: 0;
+}
+
+/* One grain layer for the whole site — also kills gradient banding */
+.atmo-grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain-o);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* ————— Plane material — translucent architectural glass ————— */
+.plane-sheet {
+  background-image: linear-gradient(180deg, var(--plane-hi), var(--plane-lo));
+  border: 1px solid var(--plane-brd);
+  border-bottom-color: var(--plane-brd-btm);
+  border-radius: var(--r-plane);
+  box-shadow:
+    inset 0 1px 0 var(--plane-edge),
+    var(--e2);
+}
+
+.panel {
+  background: var(--panel-fill);
+  border: 1px solid var(--panel-brd);
+  border-radius: var(--r-panel);
+  box-shadow: var(--e1);
+}
+
+/* Skip link — first focusable element, visible only on focus */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 60;
+  padding: 8px 12px;
+  border-radius: var(--r-ui);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-family: var(--font-plex);
+  font-size: 12px;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
 }
 
 /* Page-load sequence (hero only) */
