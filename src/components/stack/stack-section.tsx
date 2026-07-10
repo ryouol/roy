@@ -125,15 +125,6 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     });
   });
 
-  /* Seed focus for deep links / reloads mid-pin. */
-  useEffect(() => {
-    if (!enhanced) return;
-    const c = camera.get();
-    setFocusedDepth(
-      segments.find((s) => Math.abs(c - s.depth) < FOCUS_ENTER)?.depth ?? null
-    );
-  }, [enhanced, camera]);
-
   /* Layers are timeline positions, not document offsets — resolve a
      layer to its dwell midpoint inside the pin. */
   const jumpTo = useCallback(

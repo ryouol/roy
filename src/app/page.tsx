@@ -101,7 +101,7 @@ export default function Home() {
       </StackSection>
 
       {/* ————— Bedrock ————— */}
-      <section className="mx-auto mt-24 max-w-[720px] px-6">
+      <section className="cv-auto mx-auto mt-24 max-w-[720px] px-6">
         <Reveal>
           <div className="space-y-4 text-body text-dim">
             <p>
@@ -119,7 +119,7 @@ export default function Home() {
       </section>
 
       {/* ————— Work ————— */}
-      <section id="work" className="mx-auto mt-24 max-w-[720px] px-6">
+      <section id="work" className="cv-auto mx-auto mt-24 max-w-[720px] px-6">
         <Reveal>
           <SectionLabel num="04" hint="waterloo co-op calendar">
             work
@@ -175,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* ————— Contact ————— */}
-      <section id="contact" className="mx-auto mt-24 max-w-[720px] px-6">
+      <section id="contact" className="cv-auto mx-auto mt-24 max-w-[720px] px-6">
         <Reveal>
           <SectionLabel num="05">contact</SectionLabel>
         </Reveal>

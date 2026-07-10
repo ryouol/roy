@@ -540,6 +540,12 @@ html[data-stack-pinned] .site-nav {
   box-shadow: var(--e1);
 }
 
+/* Skip layout/paint for sections parked below a 470vh track */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
+}
+
 /* Page-load sequence (hero only) */
 @keyframes rise {
   from {
