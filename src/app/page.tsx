@@ -12,21 +12,18 @@ import { ThemeToggle } from "@/components/theme";
 import { contactLinks, links, workHistory } from "@/lib/data";
 import { layers } from "@/lib/projects";
 
+// The layer plates carry the numbered descent (01–03); the ground you
+// land on is deliberately unnumbered — you've arrived, not stepped deeper.
 function SectionLabel({
-  num,
   children,
   hint,
 }: {
-  num: string;
   children: React.ReactNode;
   hint?: string;
 }) {
   return (
     <div className="flex items-baseline justify-between gap-4 border-b border-(--hairline) pb-3">
-      <h2 className="font-mono text-label uppercase">
-        <span className="text-signal">{num}</span>
-        <span className="text-dim"> / {children}</span>
-      </h2>
+      <h2 className="font-mono text-label uppercase text-dim">{children}</h2>
       {hint && (
         <span className="font-mono text-micro text-dim/70">{hint}</span>
       )}
@@ -78,11 +75,11 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="rise mt-10" style={{ animationDelay: "240ms" }}>
+        <div className="rise mt-6" style={{ animationDelay: "240ms" }}>
           <StackFigure />
         </div>
 
-        <div className="rise mt-8" style={{ animationDelay: "320ms" }}>
+        <div className="rise mt-4" style={{ animationDelay: "320ms" }}>
           <div className="scroll-cue" aria-hidden />
           <p className="mt-4 text-center font-mono text-label uppercase">
             <span className="text-signal">01</span>
@@ -121,9 +118,7 @@ export default function Home() {
       {/* ————— Work ————— */}
       <section id="work" className="cv-auto mx-auto mt-24 max-w-[720px] px-6">
         <Reveal>
-          <SectionLabel num="04" hint="waterloo co-op calendar">
-            work
-          </SectionLabel>
+          <SectionLabel hint="waterloo co-op calendar">work</SectionLabel>
         </Reveal>
 
         <Reveal>
@@ -177,7 +172,7 @@ export default function Home() {
       {/* ————— Contact ————— */}
       <section id="contact" className="cv-auto mx-auto mt-24 max-w-[720px] px-6">
         <Reveal>
-          <SectionLabel num="05">contact</SectionLabel>
+          <SectionLabel>contact</SectionLabel>
         </Reveal>
         <Reveal>
           <p className="max-w-[560px] pt-8 text-body text-dim">

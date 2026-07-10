@@ -53,6 +53,11 @@
   --r-ui: 6px;
   --r-panel: 10px;
   --r-plane: 18px;
+
+  /* Hero figure sheets — lifted off the background so the stack reads */
+  --fig-hi: #232b3d;
+  --fig-lo: #12161f;
+  --fig-edge: rgba(231, 234, 243, 0.16);
 }
 
 html.light {
@@ -92,6 +97,10 @@ html.light {
     0 24px 48px -16px rgba(29, 29, 31, 0.12);
   --e3: 0 2px 4px rgba(29, 29, 31, 0.08), 0 16px 40px -8px rgba(29, 29, 31, 0.14),
     0 48px 96px -24px rgba(29, 29, 31, 0.16);
+
+  --fig-hi: #ffffff;
+  --fig-lo: #eaeef4;
+  --fig-edge: rgba(29, 29, 31, 0.1);
 }
 
 /* Konami easter egg: everything is token-driven, so one class
@@ -122,6 +131,10 @@ html.phosphor {
   --panel-fill: rgba(18, 14, 6, 0.55);
   --panel-brd: rgba(255, 217, 160, 0.06);
   --hairline: rgba(255, 217, 160, 0.07);
+
+  --fig-hi: #241a09;
+  --fig-lo: #120d05;
+  --fig-edge: rgba(255, 217, 160, 0.16);
 }
 
 @theme inline {
@@ -284,17 +297,18 @@ p {
 /* ————— Hero stack figure — the legend for the traversal —————
    Real CSS 3D lives only here: static, decorative, no body text. */
 .figure-wrap {
-  perspective: 1100px;
-  perspective-origin: 50% 38%;
-  height: 300px;
+  position: relative;
+  perspective: 1150px;
+  perspective-origin: 50% 46%;
+  height: 340px;
   display: grid;
   place-items: center;
 }
 
 .figure-group {
   position: relative;
-  width: 280px;
-  height: 180px;
+  width: 300px;
+  height: 190px;
   transform-style: preserve-3d;
   transform: rotateX(56deg) rotateZ(-34deg);
   transition: transform 400ms var(--ease-out);
@@ -302,7 +316,7 @@ p {
 
 @media (min-width: 640px) {
   .figure-wrap {
-    height: 340px;
+    height: 380px;
   }
   .figure-group {
     width: 340px;
@@ -310,41 +324,95 @@ p {
   }
 }
 
+/* Soft cast beneath the stack — grounds it in space */
+.figure-shadow {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 58%;
+  height: 110px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+
 .figure-sheet {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
+  border-radius: var(--r-plane);
+  background-image: linear-gradient(150deg, var(--fig-hi), var(--fig-lo));
+  border: 1px solid var(--fig-edge);
+  box-shadow:
+    inset 0 1px 0 var(--fig-edge),
+    var(--e2);
+  color: var(--ink);
 }
 
+/* Atmospheric perspective: front sheet crisp, deeper sheets recede and blur */
 .figure-sheet.z0 {
   transform: translateZ(0);
 }
 
 .figure-sheet.z1 {
-  transform: translateZ(-72px);
-  opacity: 0.75;
-  filter: saturate(var(--z1-sat));
+  transform: translateZ(-84px);
+  opacity: 0.88;
+  filter: saturate(0.72) blur(0.4px);
   box-shadow:
-    inset 0 1px 0 var(--plane-edge),
+    inset 0 1px 0 var(--fig-edge),
     var(--e1);
 }
 
 .figure-sheet.z2 {
-  transform: translateZ(-144px);
-  opacity: 0.5;
-  filter: saturate(var(--z2-sat));
+  transform: translateZ(-168px);
+  opacity: 0.64;
+  filter: saturate(0.42) blur(1.1px);
   box-shadow:
-    inset 0 1px 0 var(--plane-edge),
+    inset 0 1px 0 var(--fig-edge),
     var(--e1);
 }
 
-/* Counter-rotate labels to face the camera (inverse of the group rotation) */
-.figure-label {
+/* Motifs lie flat on the sheet — foreshortened, like circuitry on a board */
+.figure-motif {
   position: absolute;
-  bottom: 14px;
-  left: 16px;
-  transform: rotateZ(34deg) rotateX(-56deg);
-  transform-origin: left bottom;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.figure-motif .mk-faint {
+  fill: currentColor;
+  opacity: 0.2;
+}
+.figure-motif .mk-mid {
+  fill: currentColor;
+  opacity: 0.58;
+}
+.figure-motif .mk-bright {
+  fill: currentColor;
+  opacity: 0.92;
+}
+.figure-motif .mk-edge {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.42;
+}
+.figure-motif .mk-base {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.14;
+}
+.figure-motif .mk-line {
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+.figure-motif .mk-signal {
+  fill: var(--signal);
 }
 
 /* Scroll cue — a signal dot descending a hairline; labels, never instructs */

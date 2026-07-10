@@ -16,20 +16,20 @@ export const layers: Layer[] = [
     id: "execution",
     index: 0,
     name: "execution",
-    thesis: "Decisions meeting the world — real-time, with stakes.",
+    thesis: "Decisions with something at stake, made in real time.",
   },
   {
     id: "infrastructure",
     index: 1,
     name: "infrastructure",
     thesis:
-      "The coordination layer — platforms, serving, and the plumbing that makes systems fast.",
+      "The layer that coordinates the rest — platforms, serving, and the plumbing underneath.",
   },
   {
     id: "perception",
     index: 2,
     name: "perception",
-    thesis: "Raw signal into structure — models that read noisy input.",
+    thesis: "Structure pulled out of noisy input — the read everything else runs on.",
   },
 ];
 
