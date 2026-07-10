@@ -16,6 +16,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
   type MotionValue,
 } from "motion/react";
@@ -63,11 +64,19 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     target: trackRef,
     offset: ["start start", "end end"],
   });
-  const camera = useTransform(
+  /* Sprung camera: wheel steps become eased glides — the smooth-scroll
+     feel without hijacking native scroll. Tight enough to track the
+     finger; plateaus in the keypoint map keep dwells exact. */
+  const rawCamera = useTransform(
     scrollYProgress,
     cameraKeypoints.progress,
     cameraKeypoints.camera
   );
+  const camera = useSpring(rawCamera, {
+    stiffness: 120,
+    damping: 28,
+    mass: 0.35,
+  });
   const stageHeight = useMotionValue(0);
 
   /* Enhancement gate — flips before paint, so SSR markup never shifts

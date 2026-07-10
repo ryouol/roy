@@ -3,6 +3,7 @@ import { EasterEggs } from "@/components/eggs";
 import { ExternalLink } from "@/components/external-link";
 import { SiteNav } from "@/components/nav";
 import { Reveal } from "@/components/reveal";
+import { HeroSection } from "@/components/stack/hero-section";
 import { LayerPlate } from "@/components/stack/layer-plate";
 import { Plane } from "@/components/stack/plane";
 import { StackFigure } from "@/components/stack/stack-figure";
@@ -39,57 +40,61 @@ export default function Home() {
       </a>
       <SiteNav />
 
-      {/* ————— Hero ————— */}
-      <header id="top" className="mx-auto max-w-[720px] px-6 pt-10 sm:pt-12">
-        <div className="rise flex items-center justify-between font-mono text-xs text-dim">
-          <LocalTime />
-          <ThemeToggle />
-        </div>
-
-        <div className="mt-16 text-center sm:mt-20">
-          <h1 className="rise text-[44px] font-semibold leading-[1.02] tracking-[-0.022em] sm:text-[56px]">
-            Roy Luo
-          </h1>
-          <p
-            className="rise mt-3 text-[17px] text-dim sm:text-[18px]"
-            style={{ animationDelay: "80ms" }}
-          >
-            Software engineer, currently at{" "}
-            <a
-              href={links.squint}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-signal"
-            >
-              Squint
-            </a>
-            .
-          </p>
-
-          <div
-            className="rise mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2"
-            style={{ animationDelay: "160ms" }}
-          >
-            {contactLinks.map((link) => (
-              <ExternalLink key={link.label} href={link.href}>
-                {link.label}
-              </ExternalLink>
-            ))}
+      {/* ————— Hero — pinned open; headline recedes as you scroll ————— */}
+      <HeroSection
+        utility={
+          <div className="rise flex items-center justify-between font-mono text-xs text-dim">
+            <LocalTime />
+            <ThemeToggle />
           </div>
-        </div>
-
-        <div className="rise mt-2" style={{ animationDelay: "240ms" }}>
-          <StackFigure />
-        </div>
-
-        <div className="rise" style={{ animationDelay: "320ms" }}>
-          <div className="scroll-cue" aria-hidden />
-          <p className="mt-4 text-center font-mono text-label uppercase">
-            <span className="text-signal">01</span>
-            <span className="text-dim"> / execution</span>
-          </p>
-        </div>
-      </header>
+        }
+        headline={
+          <>
+            <h1 className="rise text-[44px] font-semibold leading-[1.02] tracking-[-0.022em] sm:text-[56px]">
+              Roy Luo
+            </h1>
+            <p
+              className="rise mt-3 text-[17px] text-dim sm:text-[18px]"
+              style={{ animationDelay: "80ms" }}
+            >
+              Software engineer, currently at{" "}
+              <a
+                href={links.squint}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-signal"
+              >
+                Squint
+              </a>
+              .
+            </p>
+            <div
+              className="rise mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2"
+              style={{ animationDelay: "160ms" }}
+            >
+              {contactLinks.map((link) => (
+                <ExternalLink key={link.label} href={link.href}>
+                  {link.label}
+                </ExternalLink>
+              ))}
+            </div>
+          </>
+        }
+        figure={
+          <div className="rise" style={{ animationDelay: "240ms" }}>
+            <StackFigure />
+          </div>
+        }
+        cue={
+          <div className="rise" style={{ animationDelay: "320ms" }}>
+            <div className="scroll-cue" aria-hidden />
+            <p className="mt-4 text-center font-mono text-label uppercase">
+              <span className="text-signal">01</span>
+              <span className="text-dim"> / execution</span>
+            </p>
+          </div>
+        }
+      />
 
       {/* ————— The stack ————— */}
       <StackSection>
