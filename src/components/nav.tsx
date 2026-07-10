@@ -24,7 +24,7 @@ export function SiteNav() {
     <nav
       ref={navRef}
       aria-label="Site"
-      className={`fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none ${
+      className={`site-nav fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none ${
         shown ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-full opacity-0"
       }`}
     >

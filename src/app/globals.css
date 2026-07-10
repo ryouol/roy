@@ -405,6 +405,70 @@ p {
   background-color: var(--bg);
 }
 
+/* ————— Pinned traversal (js-stack) —————
+   Transforms/opacity scrub per frame via MotionValues; filter switches
+   ONLY at discrete data-state changes, transitioned here. */
+.js-stack .stack-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.js-stack .stack-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.js-stack .stack-plane {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  margin: 0;
+  transition: filter 450ms var(--ease-out);
+}
+
+/* Front plane paints above deeper ones */
+.js-stack .stack-plane[data-layer="execution"] {
+  z-index: 3;
+}
+.js-stack .stack-plane[data-layer="infrastructure"] {
+  z-index: 2;
+}
+.js-stack .stack-plane[data-layer="perception"] {
+  z-index: 1;
+}
+
+/* Depth-of-field tiers — exactly one legible plane at a time */
+.js-stack .stack-plane[data-state="near"] {
+  filter: blur(var(--z1-blur)) saturate(var(--z1-sat));
+}
+.js-stack .stack-plane[data-state="far"] {
+  filter: blur(var(--z2-blur)) saturate(var(--z2-sat));
+}
+.js-stack .stack-plane[data-state="passed"] {
+  filter: blur(var(--zpast-blur)) saturate(var(--zpast-sat));
+}
+.js-stack .stack-plane:not([data-state="focused"]) {
+  pointer-events: none;
+}
+
+/* Promote planes only while the traversal is on screen */
+[data-pinned] .stack-plane {
+  will-change: transform, opacity;
+}
+
+/* Backdrop blur over moving planes re-blurs every frame — go opaque
+   while pinned instead */
+html[data-stack-pinned] .site-nav {
+  background: var(--bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 /* Bedrock — the ledger's resting sheet after the descent */
 .bedrock-sheet {
   background: var(--panel-fill);
@@ -480,5 +544,11 @@ p {
   }
   .figure-group {
     transition: none;
+  }
+  /* Belt-and-braces: the traversal never enhances under reduced motion,
+     but even if it did, planes must stay legible and still. */
+  .stack-plane {
+    filter: none !important;
+    transition: none !important;
   }
 }
