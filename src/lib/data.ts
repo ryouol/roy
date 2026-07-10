@@ -71,7 +71,7 @@ export const links = {
 
 export const email = links.email.replace("mailto:", "");
 
-export const sections = ["work", "projects", "contact"] as const;
+export const sections = ["projects", "work", "contact"] as const;
 
 export const contactLinks = [
   { label: "email", value: email, href: links.email },

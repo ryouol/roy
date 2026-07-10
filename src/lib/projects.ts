@@ -91,10 +91,7 @@ export const projects: Project[] = [
     layer: "infrastructure",
     compact: true,
     links: [
-      {
-        label: "github.com/ryouol/gRPCNvidia-Work",
-        href: "https://github.com/ryouol/gRPCNvidia-Work",
-      },
+      { label: "github", href: "https://github.com/ryouol/gRPCNvidia-Work" },
     ],
   },
   {
@@ -105,10 +102,7 @@ export const projects: Project[] = [
     layer: "infrastructure",
     compact: true,
     links: [
-      {
-        label: "github.com/ryouol/wla-distibutor",
-        href: "https://github.com/ryouol/wla-distibutor",
-      },
+      { label: "github", href: "https://github.com/ryouol/wla-distibutor" },
     ],
   },
   {
