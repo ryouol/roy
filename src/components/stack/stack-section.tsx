@@ -12,6 +12,7 @@ import {
 import {
   LazyMotion,
   domAnimation,
+  m,
   useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
@@ -26,11 +27,13 @@ import {
   FOCUS_EXIT,
   TRAVEL_VH,
   cameraKeypoints,
+  hero,
   progressForLayer,
   segments,
 } from "@/lib/timeline";
 import { Atmosphere, ScrubbedAtmosphere } from "./atmosphere";
 import { DepthRail } from "./depth-rail";
+import { StackFigure } from "./stack-figure";
 
 interface StackContextValue {
   camera: MotionValue<number>;
@@ -48,15 +51,31 @@ export function useStack() {
   return value;
 }
 
-/* The track. Static-first: SSR and the first client render emit the
-   sequential flow layout; js-stack switches on the pinned traversal in a
-   pre-paint layout effect (≥768px, motion-ok only). All per-frame work
-   lives in MotionValues — React renders only at focus crossings. */
-export function StackSection({ children }: { children: React.ReactNode }) {
+/* Serializable slots only — page.tsx is a server component. The figure
+   (which needs the dive MotionValue) is rendered here directly. */
+interface HeroSlots {
+  utility: React.ReactNode;
+  headline: React.ReactNode;
+  cue: React.ReactNode;
+}
+
+/* The track — hero included. One pinned timeline: the headline recedes
+   (dwell), the camera dives INTO the figure (it un-tilts, spreads, and
+   fades while the real plates rise through it), then the descent runs
+   as before. Static-first: SSR and the first client render emit the
+   sequential flow layout; js-stack switches everything on pre-paint. */
+export function StackSection({
+  heroSlots,
+  children,
+}: {
+  heroSlots: HeroSlots;
+  children: React.ReactNode;
+}) {
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [enhanced, setEnhanced] = useState(false);
   const [pinned, setPinned] = useState(false);
+  const [heroGone, setHeroGone] = useState(false);
   const [focusedDepth, setFocusedDepth] = useState<number | null>(null);
   const reduced = useReducedMotion();
 
@@ -64,9 +83,15 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     target: trackRef,
     offset: ["start start", "end end"],
   });
-  /* Sprung camera: wheel steps become eased glides — the smooth-scroll
-     feel without hijacking native scroll. Tight enough to track the
-     finger; plateaus in the keypoint map keep dwells exact. */
+
+  /* Sprung sources: wheel steps become eased glides, and springs are
+     load-bearing — raw scroll-linked opacity gets routed onto ViewTimeline
+     WAAPI animations whose progress ignores our offsets. */
+  const sp = useSpring(scrollYProgress, {
+    stiffness: 160,
+    damping: 32,
+    mass: 0.3,
+  });
   const rawCamera = useTransform(
     scrollYProgress,
     cameraKeypoints.progress,
@@ -78,6 +103,35 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     mass: 0.35,
   });
   const stageHeight = useMotionValue(0);
+
+  /* ——— Hero choreography ——— */
+  const { dwellEnd, diveEnd } = hero;
+  const dive = useTransform(sp, [dwellEnd, diveEnd], [0, 1]);
+  const utilityOpacity = useTransform(sp, [0, dwellEnd * 0.7], [1, 0]);
+  const utilityY = useTransform(sp, [0, dwellEnd * 0.7], [0, -8]);
+  const headOpacity = useTransform(sp, [0, dwellEnd], [1, 0]);
+  const headY = useTransform(sp, [0, dwellEnd], [0, -40]);
+  const headScale = useTransform(sp, [0, dwellEnd], [1, 0.965]);
+  const cueOpacity = useTransform(sp, [0, dwellEnd * 0.5], [1, 0]);
+  const cueY = useTransform(sp, [0, dwellEnd * 0.5], [0, -12]);
+  const span = diveEnd - dwellEnd;
+  const figScale = useTransform(sp, [dwellEnd, diveEnd], [1, 1.5]);
+  const figY = useTransform(sp, [dwellEnd, diveEnd], ["0vh", "-4vh"]);
+  const figOpacity = useTransform(
+    sp,
+    [dwellEnd + span * 0.3, dwellEnd + span * 0.72],
+    [1, 0]
+  );
+  /* Plates hidden through the dwell; they rise in as the figure opens. */
+  const sceneOpacity = useTransform(
+    sp,
+    [dwellEnd, dwellEnd + span * 0.6],
+    [0, 1]
+  );
+
+  useMotionValueEvent(sp, "change", (v) => {
+    setHeroGone(v > diveEnd);
+  });
 
   /* Enhancement gate — flips before paint, so SSR markup never shifts
      visibly. Reacts live to viewport and reduced-motion changes. */
@@ -111,15 +165,10 @@ export function StackSection({ children }: { children: React.ReactNode }) {
     }
     const track = trackRef.current;
     if (!track) return;
-    // Trigger only once the track is genuinely entering the viewport, so the
-    // depth rail and will-change promotion don't fire while still in the hero.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setPinned(entry.isIntersecting);
-        root.toggleAttribute("data-stack-pinned", entry.isIntersecting);
-      },
-      { rootMargin: "0px 0px -55% 0px" }
-    );
+    const io = new IntersectionObserver(([entry]) => {
+      setPinned(entry.isIntersecting);
+      root.toggleAttribute("data-stack-pinned", entry.isIntersecting);
+    });
     io.observe(track);
     return () => {
       io.disconnect();
@@ -205,11 +254,14 @@ export function StackSection({ children }: { children: React.ReactNode }) {
           className={`stack-track${enhanced ? " js-stack" : ""}`}
           style={enhanced ? { height: `${TRAVEL_VH + 100}vh` } : undefined}
         >
+          {/* Sentinel: keeps nav.tsx's #top observer and the terminal's
+              `top` command working now that the hero shares this track. */}
+          <div id="top" className="stack-top-sentinel" aria-hidden />
           {enhanced ? <ScrubbedAtmosphere camera={camera} /> : <Atmosphere />}
           {enhanced && (
             <DepthRail
               focusedDepth={focusedDepth}
-              pinned={pinned}
+              pinned={pinned && focusedDepth !== null}
               onJump={jumpTo}
             />
           )}
@@ -218,7 +270,55 @@ export function StackSection({ children }: { children: React.ReactNode }) {
             className="stack-stage"
             data-pinned={pinned || undefined}
           >
-            <div className="stack-scene">{children}</div>
+            <div
+              className="stack-hero"
+              data-gone={(enhanced && heroGone) || undefined}
+            >
+              <div className="hero-col mx-auto max-w-[720px] px-6 pt-10 sm:pt-12">
+                <m.div
+                  style={
+                    enhanced
+                      ? { opacity: utilityOpacity, y: utilityY }
+                      : undefined
+                  }
+                >
+                  {heroSlots.utility}
+                </m.div>
+                <m.div
+                  className="hero-head mt-16 text-center sm:mt-20"
+                  style={
+                    enhanced
+                      ? { opacity: headOpacity, y: headY, scale: headScale }
+                      : undefined
+                  }
+                >
+                  {heroSlots.headline}
+                </m.div>
+                <m.div
+                  className="mt-2"
+                  style={
+                    enhanced
+                      ? { opacity: figOpacity, y: figY, scale: figScale }
+                      : undefined
+                  }
+                >
+                  <div className="rise" style={{ animationDelay: "240ms" }}>
+                    <StackFigure dive={dive} />
+                  </div>
+                </m.div>
+                <m.div
+                  style={enhanced ? { opacity: cueOpacity, y: cueY } : undefined}
+                >
+                  {heroSlots.cue}
+                </m.div>
+              </div>
+            </div>
+            <m.div
+              className="stack-scene"
+              style={enhanced ? { opacity: sceneOpacity } : undefined}
+            >
+              {children}
+            </m.div>
           </div>
         </section>
       </StackContext.Provider>

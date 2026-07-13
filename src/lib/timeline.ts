@@ -7,7 +7,11 @@ import { layers, projectsFor, type LayerId } from "./projects";
    height is TRAVEL_VH + one stage height (100vh). Segment lengths
    derive from panel counts, so adding a project stretches its layer. */
 
-const APPROACH_VH = 40;
+/* The hero lives inside the same pin: a dwell (headline recedes, figure
+   holds) then the dive (the camera enters the figure — it un-tilts and
+   fades while the real plates rise through it). */
+const HERO_DWELL_VH = 35;
+const DIVE_VH = 40;
 const LAYER_BASE_VH = 60;
 const PER_PANEL_VH = 30;
 
@@ -30,10 +34,17 @@ const spans = layers.map(
   (l) => LAYER_BASE_VH + PER_PANEL_VH * projectsFor(l.id).length
 );
 
-export const TRAVEL_VH = APPROACH_VH + spans.reduce((a, b) => a + b, 0);
+export const TRAVEL_VH =
+  HERO_DWELL_VH + DIVE_VH + spans.reduce((a, b) => a + b, 0);
+
+/* Normalized hero breakpoints shared by the orchestrator and the figure. */
+export const hero = {
+  dwellEnd: HERO_DWELL_VH / TRAVEL_VH,
+  diveEnd: (HERO_DWELL_VH + DIVE_VH) / TRAVEL_VH,
+};
 
 export const segments: Segment[] = (() => {
-  let cursor = APPROACH_VH;
+  let cursor = HERO_DWELL_VH + DIVE_VH;
   return layers.map((l, i) => {
     const enter = cursor / TRAVEL_VH;
     const exit = (cursor + spans[i]) / TRAVEL_VH;
@@ -51,10 +62,12 @@ export const segments: Segment[] = (() => {
 })();
 
 /* Camera curve: one piecewise-linear map from pin progress to camera
-   depth c ∈ [−0.5, 2]. Plateaus are dwells; ramps are fly-throughs. */
+   depth c ∈ [−0.9, 2]. Parked deep through the hero dwell, it rises
+   through the dive (plates growing toward the viewer as the figure
+   opens), then plateaus at each layer. */
 export const cameraKeypoints = (() => {
-  const progress = [0, APPROACH_VH / TRAVEL_VH];
-  const camera = [-0.5, -0.15];
+  const progress = [0, hero.dwellEnd, hero.diveEnd];
+  const camera = [-0.9, -0.9, -0.15];
   for (const seg of segments) {
     progress.push(seg.focusStart, seg.focusEnd);
     camera.push(seg.depth, seg.depth);

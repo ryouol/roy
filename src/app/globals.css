@@ -374,7 +374,7 @@ p {
 }
 
 .figure-sheet.z1 {
-  transform: translateZ(-84px);
+  transform: translateZ(calc(-84px * var(--spread, 1)));
   opacity: 0.88;
   filter: saturate(0.72) blur(0.4px);
   box-shadow:
@@ -383,7 +383,7 @@ p {
 }
 
 .figure-sheet.z2 {
-  transform: translateZ(-168px);
+  transform: translateZ(calc(-168px * var(--spread, 1)));
   opacity: 0.64;
   filter: saturate(0.42) blur(1.1px);
   box-shadow:
@@ -511,33 +511,55 @@ p {
   }
 }
 
-/* ————— Pinned hero (js-hero) ————— */
-.js-hero .hero-stage {
-  position: sticky;
+/* ————— Hero inside the track ————— */
+.stack-top-sentinel {
+  position: absolute;
   top: 0;
+  left: 0;
   height: 100svh;
-  overflow: hidden;
+  width: 1px;
+  pointer-events: none;
+}
+
+/* Static: the hero flows above the plates. Pinned: it overlays the stage
+   while the dive hands off to the scene. */
+.js-stack .stack-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 4; /* above the planes (1–3) while visible */
+  pointer-events: none; /* the zone never blocks; slots re-enable */
+}
+
+.js-stack .stack-hero .hero-col > * {
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+/* Past the dive: skip the invisible links for keyboard and SR */
+.js-stack .stack-hero[data-gone] {
+  visibility: hidden;
 }
 
 /* Compress the column so the full composition fits any pinned viewport */
-.js-hero .hero-head {
+.js-stack .stack-hero .hero-head {
   margin-top: clamp(20px, 5svh, 80px);
 }
 
-.js-hero .figure-wrap {
+.js-stack .stack-hero .figure-wrap {
   height: clamp(280px, 44svh, 460px);
 }
 
-.js-hero .hero-col > * {
-  will-change: transform, opacity;
+/* Static flow: give the plates room after the hero */
+.stack-track:not(.js-stack) .stack-scene {
+  margin-top: 6rem;
 }
 
 /* ————— Stack layout — static-first —————
    Base rules render the sequential fallback (mobile, reduced motion,
    no-JS). The .js-stack class switches on the pinned traversal. */
+/* The track now opens the page (hero included) — no top offset */
 .stack-track {
   position: relative;
-  margin-top: 6rem;
 }
 
 .stack-conveyor {

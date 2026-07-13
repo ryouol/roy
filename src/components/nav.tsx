@@ -33,15 +33,31 @@ export function SiteNav() {
           Roy Luo
         </a>
         <div className="flex items-center gap-5 font-mono text-xs">
-          {sections.map((section) => (
-            <a
-              key={section}
-              href={`#${section}`}
-              className="text-dim transition-colors hover:text-ink"
-            >
-              {section}
-            </a>
-          ))}
+          {sections.map((section) =>
+            section === "projects" ? (
+              // The track begins at page top now — route to the first
+              // layer's dwell instead of the anchor.
+              <button
+                key={section}
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent("stack:jump", { detail: "execution" })
+                  )
+                }
+                className="text-dim transition-colors hover:text-ink"
+              >
+                {section}
+              </button>
+            ) : (
+              <a
+                key={section}
+                href={`#${section}`}
+                className="text-dim transition-colors hover:text-ink"
+              >
+                {section}
+              </a>
+            )
+          )}
           <ThemeToggle />
         </div>
       </div>

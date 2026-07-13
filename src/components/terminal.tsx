@@ -95,7 +95,14 @@ export function Terminal() {
 
     if (name === "top" || (sections as readonly string[]).includes(name)) {
       setOpen(false);
-      document.getElementById(name)?.scrollIntoView();
+      if (name === "projects") {
+        // The track begins at page top now — land on the first layer.
+        window.dispatchEvent(
+          new CustomEvent("stack:jump", { detail: "execution" })
+        );
+      } else {
+        document.getElementById(name)?.scrollIntoView();
+      }
       return;
     }
 

@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import {
+  useMotionValue,
+  useMotionValueEvent,
+  type MotionValue,
+} from "motion/react";
 import { layers, type LayerId } from "@/lib/projects";
-
-const BASE = "rotateX(56deg) rotateZ(-34deg)";
 
 /* Each plane carries the kind of computation that lives there, so the
    figure reads as a cross-section of a system rather than blank cards.
@@ -88,11 +91,26 @@ function Motif({ layer }: { layer: LayerId }) {
   );
 }
 
-/* Resting isometric stack — decorative, pointer-tilted ±2.5°.
-   Direct style writes + a CSS transition; no per-frame React work. */
-export function StackFigure() {
+/* Resting isometric stack — decorative, pointer-tilted ±2.5°. When the
+   camera dives in (dive: 0→1), the group un-tilts toward the viewer and
+   its sheets spread apart, handing off to the real plates rising behind.
+   Direct style writes composed from base pose + pointer; no per-frame
+   React work. */
+export function StackFigure({ dive }: { dive?: MotionValue<number> }) {
   const groupRef = useRef<HTMLDivElement>(null);
   const enabled = useRef(false);
+  const pointer = useRef({ x: 0, y: 0 });
+  const diveT = useRef(0);
+
+  const apply = () => {
+    const group = groupRef.current;
+    if (!group) return;
+    const t = diveT.current;
+    const rx = 56 - 40 * t + pointer.current.y;
+    const rz = -34 + 24 * t + pointer.current.x;
+    group.style.transform = `rotateX(${rx}deg) rotateZ(${rz}deg)`;
+    group.style.setProperty("--spread", `${1 + 0.55 * t}`);
+  };
 
   useEffect(() => {
     enabled.current =
@@ -100,18 +118,25 @@ export function StackFigure() {
       !matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
+  const still = useMotionValue(0);
+  useMotionValueEvent(dive ?? still, "change", (t) => {
+    diveT.current = t;
+    apply();
+  });
+
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const group = groupRef.current;
-    if (!enabled.current || !group) return;
+    if (!enabled.current || diveT.current > 0.15) return;
     const r = e.currentTarget.getBoundingClientRect();
-    const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-    const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-    group.style.transform = `rotateX(${56 - ny * 2.5}deg) rotateZ(${-34 + nx * 2.5}deg)`;
+    pointer.current = {
+      x: (((e.clientX - r.left) / r.width) * 2 - 1) * 2.5,
+      y: -(((e.clientY - r.top) / r.height) * 2 - 1) * 2.5,
+    };
+    apply();
   };
 
   const onLeave = () => {
-    const group = groupRef.current;
-    if (group) group.style.transform = BASE;
+    pointer.current = { x: 0, y: 0 };
+    apply();
   };
 
   return (
