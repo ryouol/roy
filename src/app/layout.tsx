@@ -1,24 +1,41 @@
-import type { Metadata } from "next";
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Big_Shoulders, Martian_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const display = Big_Shoulders({
+  variable: "--font-shoulders",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["600", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
+const body = Archivo({
+  variable: "--font-body",
+  subsets: ["latin"],
+});
+
+const mono = Martian_Mono({
+  variable: "--font-martian",
   subsets: ["latin"],
   weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Roy | Creative Portfolio",
-  description: "Welcome to Roy's creative space",
+  title: "Roy Luo — Software Engineer",
+  description:
+    "Software engineer at Squint. Backend and ML systems — inference, pipelines, and the plumbing that makes AI products fast. EE at Waterloo.",
 };
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#E9ECE6" },
+    { media: "(prefers-color-scheme: dark)", color: "#122B44" },
+  ],
+};
+
+// Applies the stored theme before first paint to avoid a flash.
+// Default is the drafting film (light); .dark is the cyanotype.
+const themeInit = `try{var t=localStorage.getItem("theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -26,10 +43,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${display.variable} ${body.variable} ${mono.variable} antialiased`}
       >
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         {children}
         <Analytics />
       </body>

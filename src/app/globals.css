@@ -1,172 +1,355 @@
 @import "tailwindcss";
 
+/* ————— SECTION A–A′ ——————————————————————————————————————————
+   The page is an engineering section drawing: a vertical cut through
+   the systems. Film (light) is the default sheet; .dark is the
+   cyanotype copy; .phosphor is the CRT easter egg. Token names are
+   shared across all three so every component retunes per theme. */
+
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #737373;
-  --border: #e5e5e5;
-  --accent: #0a0a0a;
-  --card: #fafafa;
+  --bg: #e9ece6; /* drafting film */
+  --well: #e0e4dd; /* recessed panel */
+  --ink: #232a2e; /* graphite line work */
+  --dim: #576166; /* secondary text */
+  --line: #c6ccc4; /* hairlines */
+  --pen: #2b5d8c; /* pen-blue line work + links */
+  --signal: #b3271e; /* markup red — current / hover / caret */
+  --hatch: rgba(35, 42, 46, 0.16);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 2.75rem;
+  --frame: 10px; /* sheet border inset */
+  --pxd: 22vh; /* parallax travel unit */
+}
+
+html.dark {
+  --bg: #122b44;
+  --well: #0e2439;
+  --ink: #dce8f2;
+  --dim: #9fb4c8;
+  --line: #2a4a6b;
+  --pen: #8fb4d9;
+  --signal: #df7a5e; /* sienna markup pencil on blueprint */
+  --hatch: rgba(220, 232, 242, 0.13);
+}
+
+/* Konami easter egg: CRT phosphor. Must sit after .dark. */
+html.phosphor {
+  --bg: #0a0804;
+  --well: #120e06;
+  --ink: #ffd9a0;
+  --dim: #b9852e;
+  --line: #2a2008;
+  --pen: #d9a55c;
+  --signal: #ffb454;
+  --hatch: rgba(255, 217, 160, 0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-card: var(--card);
-  --font-sans: var(--font-outfit);
-  --font-mono: var(--font-mono);
+  --color-bg: var(--bg);
+  --color-well: var(--well);
+  --color-ink: var(--ink);
+  --color-dim: var(--dim);
+  --color-line: var(--line);
+  --color-pen: var(--pen);
+  --color-signal: var(--signal);
+  --font-mono: var(--font-martian);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-shoulders);
+
+  /* Type scale — display carries titles; mono carries data */
+  --text-display: 3.25rem;
+  --text-display--line-height: 0.96;
+  --text-display--letter-spacing: 0.01em;
+  --text-display--font-weight: 700;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: 0.02em;
+  --text-title--font-weight: 600;
+  --text-thesis: 1.125rem;
+  --text-thesis--line-height: 1.5;
+  --text-thesis--font-weight: 500;
+  --text-panel: 1.0625rem;
+  --text-panel--line-height: 1.35;
+  --text-panel--font-weight: 600;
+  --text-body: 0.96875rem;
+  --text-body--line-height: 1.6;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.55;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 500;
+  --text-micro: 0.625rem;
+  --text-micro--line-height: 1.5;
+  --text-micro--letter-spacing: 0.08em;
 }
 
-* {
-  box-sizing: border-box;
+/* Anchor targets clear the fixed nav + frame */
+section[id],
+[id="top"] {
+  scroll-margin-top: calc(var(--nav-h) + var(--frame) + 1rem);
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: 100%;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  /* the far-field hatch bands intentionally bleed past the column */
+  overflow-x: clip;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--pen);
+  color: var(--bg);
 }
 
-/* Animations */
-@keyframes fadeInLeft {
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+/* ————— Sheet furniture ————— */
+
+/* The drawing sheet border — fixed, everything scrolls inside it */
+.sheet-frame {
+  position: fixed;
+  inset: var(--frame);
+  border: 1.5px solid var(--ink);
+  pointer-events: none;
+  z-index: 30;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --frame: 6px;
+    --pxd: 9vh;
+  }
+}
+
+/* Diagonal section hatching — material the cut passes through */
+.hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--hatch) 0,
+    var(--hatch) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+
+/* Content plates: flat, hard-edged, opaque. Drawings cast no shadows. */
+.plate {
+  border: 1.5px solid var(--ink);
+  background: var(--bg);
+}
+
+/* Dimension line: |———————| */
+.dimline {
+  position: relative;
+  height: 1px;
+  background: var(--ink);
+}
+
+.dimline::before,
+.dimline::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--ink);
+}
+
+.dimline::before {
+  left: 0;
+}
+
+.dimline::after {
+  right: 0;
+}
+
+/* Figures: duotone stills/video in the pen color; media runs in full
+   color on hover / focus (blend snaps — acceptable, it reads as the
+   drawing "coming to life"). */
+.fig-media {
+  background: var(--pen);
+}
+
+.fig-media img,
+.fig-media video {
+  mix-blend-mode: luminosity;
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.92;
+}
+
+.fig-media:hover img,
+.fig-media:hover video,
+.fig-media:focus-within img,
+.fig-media:focus-within video {
+  mix-blend-mode: normal;
+  filter: none;
+  opacity: 1;
+}
+
+/* Revision table */
+.rev-table {
+  width: 100%;
+  border: 1.5px solid var(--ink);
+  border-collapse: collapse;
+}
+
+.rev-table th,
+.rev-table td {
+  border: 1px solid var(--line);
+  padding: 0.625rem 0.75rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+/* Title block */
+.tblock {
+  border: 1.5px solid var(--ink);
+}
+
+.tblock > * {
+  border-color: var(--line);
+}
+
+/* ————— Parallax system —————
+   Depth is information architecture: each element's --pf (scroll
+   factor) corresponds to its layer. CSS scroll-driven animations where
+   supported; a small rAF fallback attaches otherwise. Transforms only. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .px {
+      animation: px-y linear both;
+      animation-timeline: view();
+    }
+  }
+}
+
+@keyframes px-y {
   from {
-    opacity: 0;
-    transform: translateX(-30px);
+    transform: translateY(calc(var(--pf, 0) * var(--pxd)));
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
+    transform: translateY(calc(var(--pf, 0) * var(--pxd) * -1));
   }
 }
 
-@keyframes fadeOutLeft {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
+/* Mirrored duplicates: flip a child, never ship a flipped file */
+.flip {
+  transform: scaleX(-1);
 }
 
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+/* will-change only while near the viewport (IntersectionObserver) */
+.px.px-near {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .px {
+    animation: none !important;
+    transform: none !important;
   }
 }
 
-@keyframes fadeOutRight {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-}
-
-@keyframes drawLine {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.animate-fade-in-left {
-  animation: fadeInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-out-left {
-  animation: fadeOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-in-right {
-  animation: fadeInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-out-right {
-  animation: fadeOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-draw-line {
-  animation: drawLine 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-}
-
-@keyframes drawLine {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-grow-bar {
-  animation: growBar 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  transform-origin: left;
-}
-
-@keyframes growBar {
-  from {
-    opacity: 1;
-    transform: scaleX(0);
-  }
-  to {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-}
-
-/* Stagger delays */
-.delay-0 { animation-delay: 0ms; }
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-
-/* Key indicator */
-.key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+/* Skip link — first focusable element, visible only on focus */
+.skip-link {
+  position: fixed;
+  top: calc(var(--frame) + 8px);
+  left: calc(var(--frame) + 8px);
+  z-index: 60;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1.5px solid var(--ink);
+  font-family: var(--font-martian);
   font-size: 11px;
-  font-family: var(--font-mono);
-  color: var(--muted);
+  transform: translateY(-200%);
 }
 
-/* Progress bar */
-.progress-bar {
-  background: var(--foreground);
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Skip layout/paint for sections parked below the fold */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Page-load sequence (header only) */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  opacity: 0;
+  animation: rise 0.7s var(--ease-out) forwards;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+.reveal.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* Current-revision indicator */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.now-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--signal);
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .reveal {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .now-dot {
+    animation: none;
+  }
 }
