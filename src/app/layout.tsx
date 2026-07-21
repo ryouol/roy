@@ -1,15 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Big_Shoulders, Martian_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const instrument = Instrument_Sans({
-  variable: "--font-instrument",
+const display = Big_Shoulders({
+  variable: "--font-shoulders",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const body = Archivo({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex",
+const mono = Martian_Mono({
+  variable: "--font-martian",
   subsets: ["latin"],
   weight: ["400", "500"],
 });
@@ -22,13 +28,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfbfd" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0d12" },
+    { media: "(prefers-color-scheme: light)", color: "#E9ECE6" },
+    { media: "(prefers-color-scheme: dark)", color: "#122B44" },
   ],
 };
 
 // Applies the stored theme before first paint to avoid a flash.
-const themeInit = `try{var t=localStorage.getItem("theme");var l=t?t==="light":matchMedia("(prefers-color-scheme: light)").matches;if(l)document.documentElement.classList.add("light")}catch(e){}`;
+// Default is the drafting film (light); .dark is the cyanotype.
+const themeInit = `try{var t=localStorage.getItem("theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -37,7 +44,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${instrument.variable} ${plexMono.variable} antialiased`}>
+      <body
+        className={`${display.variable} ${body.variable} ${mono.variable} antialiased`}
+      >
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         {children}
         <Analytics />

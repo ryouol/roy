@@ -3,15 +3,17 @@
 import { useRef, useState } from "react";
 import { Modal } from "./modal";
 
+/* Media sit inside Fig frames (which own the border + duotone); these
+   components only handle interaction. Preview is a small muted loop;
+   the full version streams only when the modal opens. */
+
 export function VideoDemo({
   preview,
   full,
   poster,
   title,
 }: {
-  /** small muted hover loop */
   preview: string;
-  /** streamed only when the modal opens */
   full: string;
   poster: string;
   title: string;
@@ -22,7 +24,7 @@ export function VideoDemo({
   return (
     <>
       <button
-        className="group relative block w-full overflow-hidden rounded-md border border-line bg-well text-left transition-colors hover:border-dim/40"
+        className="group relative block w-full text-left"
         onClick={() => setOpen(true)}
         onMouseEnter={() => previewRef.current?.play().catch(() => {})}
         onMouseLeave={() => {
@@ -36,7 +38,7 @@ export function VideoDemo({
       >
         <video
           ref={previewRef}
-          className="aspect-video w-full object-cover opacity-80 transition-all duration-700 group-hover:scale-[1.015] group-hover:opacity-100 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="aspect-video w-full object-cover"
           muted
           playsInline
           loop
@@ -47,8 +49,8 @@ export function VideoDemo({
         >
           <source src={preview} type="video/mp4" />
         </video>
-        <span className="absolute bottom-3 left-3 rounded-sm bg-bg/80 px-2 py-1 font-mono text-[11px] text-dim backdrop-blur transition-colors group-hover:text-signal">
-          ▶ demo
+        <span className="absolute bottom-2 left-2 border border-ink bg-bg px-1.5 py-0.5 font-mono text-micro uppercase text-ink transition-colors group-hover:text-signal">
+          ▶ run
         </span>
       </button>
       {open && (
@@ -71,12 +73,10 @@ export function VideoDemo({
 export function LoomDemo({
   id,
   title,
-  caption,
   poster,
 }: {
   id: string;
   title: string;
-  caption: string;
   /** static facade — the iframe loads only on click */
   poster: string;
 }) {
@@ -85,8 +85,9 @@ export function LoomDemo({
   return (
     <>
       <button
-        className="group relative block w-full overflow-hidden rounded-md border border-line bg-well text-left transition-colors hover:border-dim/40"
+        className="group relative block w-full text-left"
         onClick={() => setOpen(true)}
+        aria-label={`Play demo — ${title}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- local static facade */}
         <img
@@ -96,20 +97,10 @@ export function LoomDemo({
           height={519}
           loading="lazy"
           decoding="async"
-          className="aspect-video w-full object-cover object-top opacity-70 transition-opacity group-hover:opacity-100"
+          className="aspect-video w-full object-cover object-top"
         />
-        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 pt-8" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.72), transparent)" }}>
-          <span>
-            <span className="block text-sm font-medium text-white">
-              {title}
-            </span>
-            <span className="mt-0.5 block text-[13px] text-white/70">
-              {caption}
-            </span>
-          </span>
-          <span className="font-mono text-[11px] text-white/70 transition-colors group-hover:text-signal">
-            ▶ demo
-          </span>
+        <span className="absolute bottom-2 left-2 border border-ink bg-bg px-1.5 py-0.5 font-mono text-micro uppercase text-ink transition-colors group-hover:text-signal">
+          ▶ run
         </span>
       </button>
       {open && (

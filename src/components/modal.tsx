@@ -38,11 +38,11 @@ export function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-bg/90 p-4 backdrop-blur-sm sm:p-10"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-bg/95 p-4 sm:p-10"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-4xl overflow-hidden rounded-md border border-line bg-black"
+        className="w-full max-w-4xl overflow-hidden border-[1.5px] border-ink bg-black"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

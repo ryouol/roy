@@ -16,10 +16,9 @@ const HELP = `help          this list
 whoami        who is roy
 neofetch      system info
 uptime        time in industry
-work          jump to work
-projects      jump to projects
-contact       jump to contact
 <layer>       ${layers.map((l) => l.id).join(" · ")}
+work          jump to revisions
+contact       jump to title block
 open <site>   ${Object.keys(links).join(" · ")}
 theme <mode>  light · dark
 phosphor      you'll see
@@ -95,20 +94,7 @@ export function Terminal() {
 
     if (name === "top" || (sections as readonly string[]).includes(name)) {
       setOpen(false);
-      if (name === "projects") {
-        // The track begins at page top now — land on the first layer.
-        window.dispatchEvent(
-          new CustomEvent("stack:jump", { detail: "execution" })
-        );
-      } else {
-        document.getElementById(name)?.scrollIntoView();
-      }
-      return;
-    }
-
-    if (layers.some((l) => l.id === name)) {
-      setOpen(false);
-      window.dispatchEvent(new CustomEvent("stack:jump", { detail: name }));
+      document.getElementById(name)?.scrollIntoView();
       return;
     }
 
@@ -185,7 +171,7 @@ export function Terminal() {
         role="dialog"
         aria-modal="true"
         aria-label="Terminal"
-        className="mx-auto mt-[14vh] w-[calc(100%-2rem)] max-w-[560px] overflow-hidden rounded-xl border border-line bg-well/90 shadow-2xl backdrop-blur-xl"
+        className="mx-auto mt-[14vh] w-[calc(100%-2rem)] max-w-[560px] overflow-hidden border-[1.5px] border-ink bg-well"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-line px-4 py-2 font-mono text-[11px] text-dim">
