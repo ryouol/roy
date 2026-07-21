@@ -27,15 +27,26 @@ export function ProjectPanel({ project }: { project: Project }) {
       )}
 
       {videos.map((m) => (
-        <div key={m.src} className="mt-4 max-w-[560px]">
-          <VideoDemo src={m.src} poster={m.poster} title={project.title} />
+        <div key={m.preview} className="mt-4 max-w-[560px]">
+          <VideoDemo
+            preview={m.preview}
+            full={m.full}
+            poster={m.poster}
+            title={project.title}
+          />
         </div>
       ))}
 
       {looms.length > 0 && (
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           {looms.map((m) => (
-            <LoomDemo key={m.id} id={m.id} title={m.title} caption={m.caption} />
+            <LoomDemo
+              key={m.id}
+              id={m.id}
+              title={m.title}
+              caption={m.caption}
+              poster={m.poster}
+            />
           ))}
         </div>
       )}

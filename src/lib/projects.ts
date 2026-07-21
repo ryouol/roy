@@ -34,8 +34,14 @@ export const layers: Layer[] = [
 ];
 
 export type Media =
-  | { kind: "video"; src: string; poster: string }
-  | { kind: "loom"; id: string; title: string; caption: string };
+  | { kind: "video"; preview: string; full: string; poster: string }
+  | {
+      kind: "loom";
+      id: string;
+      title: string;
+      caption: string;
+      poster: string;
+    };
 
 export interface Project {
   slug: string;
@@ -58,7 +64,12 @@ export const projects: Project[] = [
       "Prediction markets for startup ideas. Swipe on anonymized pitches, take positions, trade on conviction.",
     layer: "execution",
     media: [
-      { kind: "video", src: "/LimitlessDemo.mp4", poster: "/limitless-poster.jpg" },
+      {
+        kind: "video",
+        preview: "/limitless-preview.mp4",
+        full: "/limitless-full.mp4",
+        poster: "/limitless-poster.jpg",
+      },
     ],
   },
   {
@@ -74,12 +85,14 @@ export const projects: Project[] = [
         id: "0ebacafae02c436b8324024a3a44bebc",
         title: "GP tools",
         caption: "Deal flow & due diligence",
+        poster: "/looms/gp-tools.webp",
       },
       {
         kind: "loom",
         id: "de3de4a9c1b4418a87f01c9119b38025",
         title: "LP portal & portco",
         caption: "Robinhood for VC",
+        poster: "/looms/lp-portco.webp",
       },
     ],
   },
