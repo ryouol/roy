@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/site-link";
 import { SiteNav } from "@/components/site-nav";
 import { JourneyMotion } from "@/components/journey-motion";
 import { Landscape, Ridge } from "@/components/landscape";

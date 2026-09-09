@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/site-link";
 export function Footer() {
   return (
     <footer className="footer">

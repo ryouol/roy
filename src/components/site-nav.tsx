@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/site-link";
 import { useRef } from "react";
 import { email } from "@/lib/site";
 

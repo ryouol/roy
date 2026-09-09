@@ -1,7 +1,7 @@
 "use client";
 import { Analytics } from "@vercel/analytics/next";
 import { useState, useSyncExternalStore } from "react";
-import Link from "next/link";
+import Link from "@/components/site-link";
 type Choice = "accepted" | "declined" | null;
 let memoryChoice: Choice = null;
 const eventName = "roy-consent-change";
