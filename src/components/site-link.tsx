@@ -2,14 +2,18 @@
 
 import NextLink, { useLinkStatus } from "next/link";
 import type { ComponentProps } from "react";
+import { createPortal } from "react-dom";
 
 function Pending() {
   const { pending } = useLinkStatus();
-  return pending ? (
-    <span className="route-status" role="status">
-      Loading…
-    </span>
-  ) : null;
+  return pending
+    ? createPortal(
+        <span className="route-status" role="status">
+          Loading…
+        </span>,
+        document.body,
+      )
+    : null;
 }
 
 export default function SiteLink({
