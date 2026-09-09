@@ -88,6 +88,14 @@ p {
 button,
 a {
   min-height: 44px;
+  min-width: 44px;
+}
+.document-page p a,
+.consent a,
+.embed-help a,
+.media-status a {
+  display: inline-flex;
+  align-items: center;
 }
 dialog {
   margin: auto;

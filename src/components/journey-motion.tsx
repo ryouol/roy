@@ -113,6 +113,8 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
                   start: "top top",
                   end: () => `+=${innerHeight * c.story.scrollScreens}`,
                   pin: true,
+                  // Keep the frame in one positioning mode at both boundaries.
+                  pinType: "transform",
                   scrub: c.story.scrub,
                   invalidateOnRefresh: true,
                 },
