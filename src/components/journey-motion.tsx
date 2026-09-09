@@ -181,11 +181,7 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
               );
               cards.forEach((card, i) => {
                 if (i === cards.length - 1) return;
-                gsap.to(card, {
-                  scale: c.stack.scale,
-                  y: c.stack.offset,
-                  opacity: c.stack.opacity,
-                  ease: "none",
+                const timeline = gsap.timeline({
                   scrollTrigger: {
                     trigger: cards[i + 1],
                     start: c.stack.start,
@@ -193,6 +189,17 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
                     scrub: c.stack.scrub,
                   },
                 });
+                timeline.to(
+                  card,
+                  { scale: c.stack.scale, y: c.stack.offset, ease: "none" },
+                  0,
+                );
+                // Keep card surfaces opaque so receding text cannot show through.
+                timeline.to(
+                  card.children,
+                  { opacity: c.stack.opacity, ease: "none" },
+                  0,
+                );
               });
             });
         return () =>

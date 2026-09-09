@@ -565,8 +565,10 @@ html:has(dialog[open]) {
 .project-card:focus-within {
   position: relative;
   z-index: 5;
-  opacity: 1 !important;
   transform: none !important;
+}
+.project-card:focus-within > * {
+  opacity: 1 !important;
 }
 .card-market {
   background: #c9d0bd;

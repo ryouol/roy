@@ -8,7 +8,7 @@ export function Landscape({
   const name = forest ? "forest" : "alpine";
   // Full-height scenery is cropped on phones; its source must cover the height.
   const sizes = forest
-    ? "(max-width: 799px) 100vw, 50vw"
+    ? "(max-width: 799px) 100vw, 178vh"
     : "(max-aspect-ratio: 16/9) 178vh, 100vw";
   return (
     <picture className="landscape-picture">
