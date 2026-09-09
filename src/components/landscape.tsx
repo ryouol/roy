@@ -6,18 +6,22 @@ export function Landscape({
   priority?: boolean;
 }) {
   const name = forest ? "forest" : "alpine";
+  // Full-height scenery is cropped on phones; its source must cover the height.
+  const sizes = forest
+    ? "(max-width: 799px) 100vw, 50vw"
+    : "(max-aspect-ratio: 16/9) 178vh, 100vw";
   return (
     <picture className="landscape-picture">
       <source
         type="image/avif"
         srcSet={`/scenery/${name}-800.avif 800w, /scenery/${name}-1600.avif 1600w`}
-        sizes="100vw"
+        sizes={sizes}
       />
       {/* Preprocessed local assets retain the same composition at both sizes. */}
       <img
         src={`/scenery/${name}-1600.webp`}
         srcSet={`/scenery/${name}-800.webp 800w, /scenery/${name}-1600.webp 1600w`}
-        sizes="100vw"
+        sizes={sizes}
         alt=""
         width={1672}
         height={941}
