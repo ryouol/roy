@@ -2,16 +2,25 @@ import Link from "@/components/site-link";
 export function Footer() {
   return (
     <footer className="footer">
-      <Link href="/" className="wordmark">
-        roy luo.
-      </Link>
       <span>© {new Date().getFullYear()} Roy Luo</span>
       <nav aria-label="Footer">
-        <Link href="/scroll-demo">Motion study</Link>
         <Link href="/privacy">Privacy</Link>
-        <Link href="/terms">Terms</Link>
-        <a href="#top">Back to top ↑</a>
+        <a href="#top">Back to top</a>
       </nav>
+      <details className="terrain-credit">
+        <summary>Scene credits</summary>
+        <p>
+          Elevation and aerial imagery:{" "}
+          <a
+            href="https://www.swisstopo.admin.ch/en"
+            target="_blank"
+            rel="noreferrer"
+          >
+            ©swisstopo
+          </a>
+          . Adapted from swissALTI3D and SWISSIMAGE for this scene.
+        </p>
+      </details>
     </footer>
   );
 }

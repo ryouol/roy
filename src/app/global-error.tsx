@@ -5,13 +5,13 @@ export default function GlobalError({ reset }: { reset: () => void }) {
     <html lang="en">
       <body
         style={{
-          background: "#10282b",
-          color: "#f2eee5",
+          background: "#edf2f7",
+          color: "#182331",
           fontFamily: "sans-serif",
           padding: "10vw",
         }}
       >
-        <h1>A pause in the journey.</h1>
+        <h1>Something went wrong.</h1>
         <p>Something didn’t load. Please try again.</p>
         <button onClick={reset}>Try again</button>
         <p>

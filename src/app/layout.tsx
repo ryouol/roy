@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { Consent } from "@/components/consent";
 import { ScrollProvider } from "@/components/scroll-provider";
@@ -7,7 +7,7 @@ import { siteUrl } from "@/lib/site";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const sans = Outfit({
+const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
@@ -20,9 +20,9 @@ const mono = JetBrains_Mono({
 });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Roy Luo — A little further", template: "%s | Roy Luo" },
+  title: { default: "Roy Luo — Software engineer", template: "%s | Roy Luo" },
   description:
-    "Software engineer. Systems, curiosity, and the road less travelled.",
+    "Software engineer and Electrical Engineering student at the University of Waterloo.",
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32" },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
 };
-export const viewport: Viewport = { themeColor: "#10282b" };
+export const viewport: Viewport = { themeColor: "#edf2f7" };
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

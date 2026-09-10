@@ -26,7 +26,7 @@ export function pageMetadata(
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: "Roy Luo — software engineer. A little further.",
+          alt: "Roy Luo — Software engineer.",
         },
       ],
     },

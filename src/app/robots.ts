@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/scroll-demo", "/privacy", "/terms"],
+      disallow: ["/scroll-demo", "/privacy"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

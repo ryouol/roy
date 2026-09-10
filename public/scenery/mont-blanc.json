@@ -1,0 +1,30 @@
+{
+  "size": 1024,
+  "widthKm": 27.2595904896583,
+  "zoom": 12,
+  "origin": [
+    2124,
+    1458
+  ],
+  "sources": [
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2124/1458.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2125/1458.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2126/1458.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2127/1458.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2124/1459.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2125/1459.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2126/1459.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2127/1459.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2124/1460.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2125/1460.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2126/1460.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2127/1460.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2124/1461.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2125/1461.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2126/1461.png",
+    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/12/2127/1461.png"
+  ],
+  "encoding": "uint16 little-endian, elevation in metres; rows north to south",
+  "attribution": "Produced using Copernicus data and information funded by the European Union — EU-DEM layers. SRTM terrain data courtesy of the U.S. Geological Survey. Distributed by Mapzen/AWS.",
+  "modifications": "Elevation rounded to metres; terrain rendering exaggerates vertical relief and adds artistic snow materials."
+}

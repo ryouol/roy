@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-export const alt = "Roy Luo — software engineer. A little further.";
+export const alt = "Roy Luo — Software engineer.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default function Image() {
@@ -9,8 +9,8 @@ export default function Image() {
         display: "flex",
         width: "100%",
         height: "100%",
-        background: "#10282b",
-        color: "#eee9df",
+        background: "#edf2f7",
+        color: "#182331",
         flexDirection: "column",
         padding: 70,
         justifyContent: "space-between",
@@ -29,23 +29,23 @@ export default function Image() {
       <div
         style={{
           display: "flex",
-          fontFamily: "serif",
+          fontFamily: "sans-serif",
           fontSize: 112,
           lineHeight: 1,
         }}
       >
-        A little further.
+        Roy Luo
       </div>
       <div
         style={{
           display: "flex",
-          borderTop: "1px solid #7b9484",
+          borderTop: "1px solid #b3c4d4",
           paddingTop: 30,
           fontSize: 24,
-          color: "#c7ccb6",
+          color: "#57677a",
         }}
       >
-        Building systems. Following curiosity. Taking the scenic route.
+        Software engineer · Electrical Engineering at Waterloo
       </div>
     </div>,
     size,

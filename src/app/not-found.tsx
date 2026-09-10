@@ -2,15 +2,11 @@ import Link from "@/components/site-link";
 export default function NotFound() {
   return (
     <main className="document-page">
-      <p className="eyebrow">404 / A small detour</p>
-      <h1>
-        Off the
-        <br />
-        <em>beaten path.</em>
-      </h1>
-      <p>This trail doesn’t lead to a page. Let’s get you back.</p>
+      <p className="eyebrow">404</p>
+      <h1>Page not found</h1>
+      <p>This page does not exist.</p>
       <Link href="/" className="pill">
-        Back to the journey ↗
+        Back to portfolio
       </Link>
     </main>
   );

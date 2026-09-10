@@ -3,35 +3,30 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionConfig as config } from "@/lib/motion";
 
 export function ScrollProvider() {
   const path = usePathname();
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const match = gsap.matchMedia();
+    const preference = matchMedia(
+      `${config.motionAllowed} and ${config.desktop}`,
+    );
     let lenis: Lenis | undefined;
-    match.add(`${config.motionAllowed} and ${config.desktop}`, () => {
-      if (!config.effects.smooth) return;
-      const instance = new Lenis({
-        ...config.lenis,
-        prevent: (node) => node.closest("dialog") !== null,
-      });
-      lenis = instance;
-      instance.on("scroll", ScrollTrigger.update);
-      const tick = (time: number) => instance.raf(time * 1000);
-      gsap.ticker.add(tick);
-      gsap.ticker.lagSmoothing(0);
-      return () => {
-        gsap.ticker.remove(tick);
-        instance.destroy();
-        lenis = undefined;
-      };
-    });
+    const updateMotion = () => {
+      lenis?.destroy();
+      lenis = undefined;
+      if (preference.matches && config.effects.smooth) {
+        lenis = new Lenis({
+          ...config.lenis,
+          autoRaf: true,
+          prevent: (node) => node.closest("dialog") !== null,
+        });
+      }
+    };
+    updateMotion();
+    preference.addEventListener("change", updateMotion);
 
-    // One owner for hash scrolling: measure after pins, then stop any old inertia.
+    // One owner for anchors, including keyboard focus and reversed navigation.
     const navigateToHash = (immediate: boolean) => {
       let id: string;
       try {
@@ -79,7 +74,7 @@ export function ScrollProvider() {
       event.preventDefault();
       if (location.hash !== url.hash) history.pushState(null, "", url.hash);
       cancelAnimationFrame(navigationFrame);
-      // Let a mobile menu close before moving the document underneath it.
+      // Complete the link action before moving the document.
       navigationFrame = requestAnimationFrame(() => navigateToHash(false));
     };
     const onHashChange = () => navigateToHash(true);
@@ -88,15 +83,21 @@ export function ScrollProvider() {
 
     let refreshFrame = 0;
     let initialNavigation = false;
+    let userMoved = false;
+    const markMoved = () => {
+      userMoved = true;
+    };
+    const onSceneryReady = () => {
+      initialNavigation = !userMoved;
+      refresh();
+    };
     let alive = true;
     const refresh = () => {
       if (!refreshFrame)
         refreshFrame = requestAnimationFrame(() => {
           refreshFrame = 0;
-          ScrollTrigger.refresh();
           lenis?.resize();
-          const journey = document.querySelector<HTMLElement>("[data-journey]");
-          if (initialNavigation && (!journey || journey.dataset.motionReady)) {
+          if (initialNavigation) {
             initialNavigation = false;
             navigateToHash(true);
           }
@@ -105,12 +106,11 @@ export function ScrollProvider() {
     const imageLoaded = (event: Event) => {
       if (event.target instanceof HTMLImageElement) refresh();
     };
-    const journeyReady = () => {
-      initialNavigation = true;
-      refresh();
-    };
     document.addEventListener("load", imageLoaded, true);
-    document.addEventListener("journey:ready", journeyReady);
+    window.addEventListener("sceneryready", onSceneryReady);
+    window.addEventListener("wheel", markMoved, { passive: true });
+    window.addEventListener("touchstart", markMoved, { passive: true });
+    window.addEventListener("keydown", markMoved);
     document.fonts.ready.then(() => {
       if (!alive) return;
       initialNavigation = true;
@@ -121,10 +121,14 @@ export function ScrollProvider() {
       cancelAnimationFrame(refreshFrame);
       cancelAnimationFrame(navigationFrame);
       document.removeEventListener("load", imageLoaded, true);
-      document.removeEventListener("journey:ready", journeyReady);
+      window.removeEventListener("sceneryready", onSceneryReady);
+      window.removeEventListener("wheel", markMoved);
+      window.removeEventListener("touchstart", markMoved);
+      window.removeEventListener("keydown", markMoved);
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("hashchange", onHashChange);
-      match.revert();
+      preference.removeEventListener("change", updateMotion);
+      lenis?.destroy();
     };
   }, [path]);
   return null;
