@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roy — A little further
 
-## Getting Started
+A scenic portfolio journey built with Next.js 16, React 19, TypeScript, Tailwind 4, GSAP/ScrollTrigger, Lenis and SplitType. Hosting remains Vercel. No backend, database or contact submission service.
 
-First, run the development server:
+## Run locally
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```sh
+npm ci
+npm run dev -- --hostname 127.0.0.1
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://127.0.0.1:3000. `/scroll-demo` isolates the parallax, pinned passage, stacked cards and reveals.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm run lint
+npm run typecheck
+npm run build
+npm run start -- --hostname 127.0.0.1 --port 3001
+# In a second terminal:
+npm run test:e2e
+npm run qa:measure
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Playwright defaults to the production server at port 3001. Install its browser once with `npx playwright install chromium`. Set `QA_BASE_URL` to test another local server. Development and production builds use Webpack after Turbopack exhibited an IPC bind failure and stale CSS hot reloads in this environment.
 
-## Learn More
+## Tune the journey
 
-To learn more about Next.js, take a look at the following resources:
+`src/lib/motion.ts` is the single animation configuration file. Every `effects` boolean can be disabled independently:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `smooth`: Lenis, once per route with GSAP ticker synchronization.
+- `hero`: SplitType line reveal on the opening heading.
+- `parallax`: image, foreground ridgeline and copy movement.
+- `story`: pinned mask reveal and three story states.
+- `stack`: sticky/receding cards; disabling restores normal document flow.
+- `reveals`: small section entrance effects.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`hero`, `reveal`, `parallax`, `story` and `stack` groups control timing, distance, scale, easing and trigger positions. Desktop enhancement starts at 800px width / 600px height. Reduced motion disables all movement, including live preference changes. Mobile retains native scrolling. Browser dialogs trap focus and stop background scrolling. Essential content remains visible with JavaScript disabled.
 
-## Deploy on Vercel
+The home page and `/scroll-demo` reuse `JourneyMotion`, `Story`, `Landscape`, and `ProjectStack`. Contact configuration lives in `src/lib/site.ts`, experience in `src/lib/data.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Production details
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Canonical origin defaults to the repository's existing `https://roy-nu-three.vercel.app`; optionally set server-side `SITE_URL`.
+- Nonce CSP requires request-time rendering. Images/fonts/scripts are same-origin; only explicitly opened Loom embeds and opt-in Vercel Analytics use external services.
+- Analytics is off until the visitor accepts. No measurement ID is needed for Vercel's existing integration.
+- Privacy/terms are **scaffolds awaiting approved copy**. This is a draft PR, not a request to merge or publish to production.
+- [Full phase checklist and outstanding input](docs/implementation-checklist.md)
+- [Main and previous PR directions](docs/branch-direction.md)
+- [Security audit](docs/security-audit.md)
+- [Simplify and code-review findings](docs/review.md)
+- [Artwork prompts and provenance](docs/artwork.md)
+- [QA evidence](docs/qa.md)
+
+Implementation references: [GSAP React lifecycle](https://gsap.com/resources/React/), [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/), [Lenis integration](https://github.com/darkroomengineering/lenis), and the installed Next.js docs in `node_modules/next/dist/docs`.
