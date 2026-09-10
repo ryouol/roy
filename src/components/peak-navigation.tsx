@@ -7,7 +7,7 @@ export function PeakNavigation() {
         <span className="peak-leader" aria-hidden="true" />
       </a>
       <a className="peak-link peak-work" href="#work">
-        <span className="peak-label">Work</span>
+        <span className="peak-label">Projects</span>
         <span className="peak-leader" aria-hidden="true" />
       </a>
       <a className="peak-link peak-contact" href="#contact">

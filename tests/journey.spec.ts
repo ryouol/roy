@@ -65,7 +65,7 @@ for (const viewport of [
     }
     for (const [name, id] of [
       ["Experience", "experience"],
-      ["Work", "work"],
+      ["Projects", "work"],
       ["Contact", "contact"],
     ]) {
       if (name !== "Experience") {
@@ -176,7 +176,7 @@ test("scene pauses while content navigation continues", async ({ page }) => {
     .getAttribute("data-flight-progress");
   await page
     .getByRole("navigation", { name: "Explore the mountains" })
-    .getByRole("link", { name: "Work", exact: true })
+    .getByRole("link", { name: "Projects", exact: true })
     .click();
   await expect(page).toHaveURL(/#work$/);
   await expect(resume).toHaveAttribute("aria-pressed", "true");
@@ -204,7 +204,7 @@ test("scene pauses while content navigation continues", async ({ page }) => {
   await page.getByRole("link", { name: "Back to top", exact: true }).click();
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(1);
   const peaks = page.getByRole("navigation", { name: "Explore the mountains" });
-  for (const name of ["Experience", "Work", "Contact"]) {
+  for (const name of ["Experience", "Projects", "Contact"]) {
     await expect(peaks.getByRole("link", { name, exact: true })).toBeVisible();
   }
   await peaks.getByRole("link", { name: "Experience", exact: true }).click();
