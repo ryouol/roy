@@ -7,7 +7,7 @@ import { workHistory } from "@/lib/data";
 import { email, pageMetadata, socialLinks } from "@/lib/site";
 
 export const metadata = pageMetadata(
-  "Software engineer",
+  "Roy Luo",
   "Roy Luo. Software engineer and Electrical Engineering student at UWaterloo. Experience at Squint, Aditum Bio, Tesla, and AES.",
 );
 

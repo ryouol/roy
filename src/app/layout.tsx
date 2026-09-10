@@ -20,15 +20,15 @@ const mono = JetBrains_Mono({
 });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Roy Luo — Software engineer", template: "%s | Roy Luo" },
+  title: { default: "Roy Luo", template: "%s | Roy Luo" },
   description:
     "Software engineer and Electrical Engineering student at the University of Waterloo.",
   icons: {
     icon: [
-      { url: "/favicon-32.png", sizes: "32x32" },
-      { url: "/favicon-16.png", sizes: "16x16" },
+      { url: "/favicon-32.png?v=alpine-2", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16.png?v=alpine-2", sizes: "16x16", type: "image/png" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/apple-touch-icon.png?v=alpine-2",
   },
   manifest: "/manifest.webmanifest",
 };
