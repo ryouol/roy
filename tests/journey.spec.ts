@@ -16,10 +16,11 @@ for (const viewport of [
   { width: 1280, height: 720 },
   { width: 820, height: 1180 },
   { width: 390, height: 844 },
+  { width: 320, height: 740 },
 ]) {
   test(`content and anchor navigation at ${viewport.width}px`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.setViewportSize(viewport);
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -98,6 +99,22 @@ for (const viewport of [
           }),
         )
         .toBeLessThan(2);
+      if (id === "work") {
+        await expect(page.locator(".project-row")).toHaveCount(6);
+        expect(
+          await page
+            .locator("#work")
+            .evaluate((el) => el.getBoundingClientRect().height),
+        ).toBeLessThan(2300);
+        await expect(page.locator(".repository-card")).toHaveCount(3);
+        const podTops = await page
+          .locator(".repository-card")
+          .evaluateAll((cards) =>
+            cards.map((card) => card.getBoundingClientRect().top),
+          );
+        expect(Math.max(...podTops) - Math.min(...podTops)).toBeLessThan(1);
+        await page.screenshot({ path: testInfo.outputPath("projects.png") });
+      }
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -111,27 +128,82 @@ for (const viewport of [
   });
 }
 
-test("demo is lazy, dismisses with Escape, and restores focus", async ({
+test("project previews use the correct demos and direct product links", async ({
   page,
 }) => {
   await ready(page);
-  await expect(page.locator("iframe")).toHaveCount(0);
-  await expect(page.locator("video")).toHaveCount(0);
-  const trigger = page.getByRole("link", {
-    name: "Watch Startup prediction market demo",
-  });
-  await trigger.click();
+  await expect(page.locator(".project-row h3")).toHaveText([
+    "Rushes",
+    "Unrender",
+    "Way Line",
+    "Startup prediction market",
+    "Loupe",
+    "VC Fund OS",
+  ]);
+  await expect(page.locator(".repository-card h3")).toHaveText([
+    "TickForge",
+    "Weighted log distributor",
+    "gRPC on NVIDIA Xavier",
+  ]);
   await expect(
-    page.getByRole("dialog", { name: "Startup prediction market demo" }),
-  ).toBeVisible();
-  await expect(page.locator("dialog[open] video")).toHaveAttribute(
-    "src",
-    "/limitless-full.mp4",
+    page.getByRole("link", { name: "Weighted log distributor on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/ryouol/wla-distibutor");
+  await expect(
+    page.getByRole("link", { name: "gRPC on NVIDIA Xavier on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/ryouol/gRPCNvidia-Work");
+  await expect(page.locator("iframe, video")).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Watch VC Fund OS demo", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "https://www.loom.com/share/0ebacafae02c436b8324024a3a44bebc",
   );
-  await page.keyboard.press("Escape");
-  await expect(page.locator("dialog[open]")).toHaveCount(0);
-  await expect(trigger).toBeFocused();
-  await expect(page.locator("video")).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "VC Fund OS LP portal demo", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "https://www.loom.com/share/de3de4a9c1b4418a87f01c9119b38025",
+  );
+  await expect(
+    page.getByRole("link", {
+      name: "Watch Startup prediction market demo",
+      exact: true,
+    }),
+  ).toHaveAttribute("href", "/limitless-full.mp4");
+  await expect(
+    page.getByRole("article", { name: "Loupe", exact: true }).locator("img"),
+  ).toHaveAttribute("alt", /inference phases, memory/);
+
+  for (const [name, id] of [
+    ["Rushes", "9dYaSqmr"],
+    ["Unrender", "4lFdVojh"],
+  ]) {
+    const preview = page.getByRole("link", {
+      name: `Watch ${name} demo`,
+      exact: true,
+    });
+    await expect(preview).toHaveAttribute(
+      "href",
+      `https://screen.studio/share/${id}`,
+    );
+    await expect(preview).toHaveAttribute("target", "_blank");
+    await expect(preview.locator("img")).toHaveAttribute("loading", "lazy");
+  }
+  for (const [name, url] of [
+    ["Rushes", "https://rushes.onrender.com/"],
+    ["Unrender", "https://unrender.onrender.com/"],
+    ["Way Line", "https://wayline-9ten.onrender.com/"],
+  ]) {
+    await expect(
+      page.getByRole("link", { name: `Try ${name}`, exact: true }),
+    ).toHaveAttribute("href", url);
+  }
+  await expect(
+    page.getByRole("link", { name: "TickForge on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/ryouol/tickforge");
+  await expect(
+    page.getByRole("link", { name: "Loupe on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/ryouol/Loupe");
 });
 
 test("reduced motion keeps the static landscape and all content", async ({
@@ -149,8 +221,8 @@ test("reduced motion keeps the static landscape and all content", async ({
   );
   await expect(page.locator(".term")).toHaveCount(6);
   await expect(
-    page.getByRole("link", { name: "Watch Startup prediction market demo" }),
-  ).toHaveAttribute("href", "/limitless-full.mp4");
+    page.getByRole("link", { name: "Watch Rushes demo" }),
+  ).toHaveAttribute("href", "https://screen.studio/share/9dYaSqmr");
   await expect(page.locator("html")).not.toHaveClass(/lenis/);
   const scan = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa"])
@@ -241,9 +313,17 @@ test("security headers and public assets remain available", async ({
   const response = await request.get("/");
   expect(response.ok()).toBe(true);
   expect(response.headers()["content-security-policy"]).toContain("nonce-");
-  expect(await response.text()).toContain('href="/limitless-full.mp4"');
+  expect(await response.text()).toContain(
+    'href="https://screen.studio/share/9dYaSqmr"',
+  );
   expect((await request.get("/terms")).status()).toBe(404);
   for (const path of [
+    "/projects/rushes.webp",
+    "/projects/unrender.webp",
+    "/projects/wayline.webp",
+    "/projects/loupe.webp",
+    "/projects/fund-os.webp",
+    "/projects/startup-market.webp",
     "/scenery/cloud-descent.webp",
     "/scenery/cloud-bank.webp",
     "/scenery/swiss-alps.bin",

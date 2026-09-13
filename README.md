@@ -36,12 +36,12 @@ Playwright defaults to the production server at port 3001. Install its browser o
 
 `hero`, `reveal`, `parallax`, `story` and `stack` groups control timing, distance, scale, easing and trigger positions. Desktop enhancement starts at 800px width / 600px height. Reduced motion disables all movement, including live preference changes. Mobile retains native scrolling. Browser dialogs trap focus and stop background scrolling. Essential content remains visible with JavaScript disabled.
 
-The home page and `/scroll-demo` reuse `JourneyMotion`, `Story`, `Landscape`, and `ProjectStack`. Contact configuration lives in `src/lib/site.ts`, experience in `src/lib/data.ts`.
+The home page and `/scroll-demo` reuse `JourneyMotion`, `Story`, `Landscape`, and `ProjectStack`. Contact configuration lives in `src/lib/site.ts`, experience in `src/lib/data.ts`, and projects in `src/lib/projects.ts`. Project preview sources are recorded in `docs/project-previews.md`.
 
 ## Production details
 
 - Canonical origin defaults to the repository's existing `https://roy-nu-three.vercel.app`; optionally set server-side `SITE_URL`.
-- Nonce CSP requires request-time rendering. Images/fonts/scripts are same-origin; only explicitly opened Loom embeds and opt-in Vercel Analytics use external services.
+- Nonce CSP requires request-time rendering. Images/fonts/scripts are same-origin; project and demo links open externally, and Vercel Analytics loads only after opt-in.
 - Analytics is off until the visitor accepts. No measurement ID is needed for Vercel's existing integration.
 - Privacy/terms are **scaffolds awaiting approved copy**. This is a draft PR, not a request to merge or publish to production.
 - [Full phase checklist and outstanding input](docs/implementation-checklist.md)

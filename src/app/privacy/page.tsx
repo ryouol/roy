@@ -37,13 +37,8 @@ export default function Privacy() {
       </p>
       <PrivacyPreferences />
       <p>
-        Loom videos load only when you choose to watch a demo. The player then
-        connects to Loom, which may collect viewing and device information or
-        use cookies under{" "}
-        <a href="https://www.atlassian.com/legal/privacy-policy">
-          Atlassian’s privacy policy
-        </a>
-        .
+        Project previews are images served by this site. Demo and project links
+        open external websites, where those sites’ privacy policies apply.
       </p>
       <p>
         Email links open your email app. This site has no contact submission
