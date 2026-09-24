@@ -340,9 +340,13 @@ test("security headers and public assets remain available", async ({
   }
 });
 
-test("analytics preferences live on Privacy and remain off until selected", async ({
+test("analytics preferences live on Privacy and respect a saved opt-out", async ({
   page,
 }) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("roy-analytics"))
+      localStorage.setItem("roy-analytics", "declined");
+  });
   let analyticsRequests = 0;
   await page.route(analyticsRoute, (route) => {
     analyticsRequests++;

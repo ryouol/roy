@@ -25,15 +25,16 @@ export default function Privacy() {
         for its hosting practices.
       </p>
       <p>
-        Optional Vercel Web Analytics stays off unless you turn it on below. It
+        Vercel Web Analytics is on by default, and you can turn it off below. It
         provides aggregate visit statistics, such as page views, referrers,
-        approximate location, and browser information. It does not use cookies.
-        See{" "}
+        approximate location, and browser information. It does not use cookies
+        or identify individual visitors. See{" "}
         <a href="https://vercel.com/docs/analytics/privacy-policy">
           Vercel’s analytics documentation
         </a>
-        . Your choice is saved in this browser’s local storage and can be
-        changed here at any time.
+        . Your choice is saved in this browser’s local storage when available
+        and can be changed here at any time. If storage is unavailable, your
+        choice lasts until the page is reloaded.
       </p>
       <PrivacyPreferences />
       <p>

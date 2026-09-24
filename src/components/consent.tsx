@@ -25,6 +25,9 @@ function subscribe(callback: () => void) {
 function serverChoice(): "server" {
   return "server";
 }
+function isEnabled(choice: Choice | "server") {
+  return choice !== "server" && choice !== "declined";
+}
 function choose(value: Exclude<Choice, null>) {
   const previous = readChoice();
   memoryChoice = value;
@@ -32,32 +35,26 @@ function choose(value: Exclude<Choice, null>) {
   try {
     localStorage.setItem("roy-analytics", value);
     persisted = true;
-  } catch {
-    // Removing an old opt-in can still succeed when storage is full.
-    if (value === "declined") {
-      try {
-        localStorage.removeItem("roy-analytics");
-        persisted = true;
-      } catch {}
-    }
-  }
+  } catch {}
+  // If storage is blocked/full, retain this choice for the current page session.
+  // Removing a saved choice would restore the default and lose an opt-out.
   memoryOverride = !persisted;
   window.dispatchEvent(new Event(eventName));
-  if (previous === "accepted" && value === "declined" && persisted)
+  if (isEnabled(previous) && value === "declined" && persisted)
     window.location.reload();
 }
-export function Consent() {
+export function SiteAnalytics() {
   const choice = useSyncExternalStore(subscribe, readChoice, serverChoice);
-  return choice === "accepted" ? (
+  return isEnabled(choice) ? (
     <Analytics
-      beforeSend={(event) => (readChoice() === "accepted" ? event : null)}
+      beforeSend={(event) => (isEnabled(readChoice()) ? event : null)}
     />
   ) : null;
 }
 export function PrivacyPreferences() {
   const choice = useSyncExternalStore(subscribe, readChoice, serverChoice);
   const loading = choice === "server";
-  const enabled = choice === "accepted";
+  const enabled = isEnabled(choice);
   return (
     <section className="privacy-preferences" aria-labelledby="analytics-title">
       <h2 id="analytics-title">Optional analytics</h2>
