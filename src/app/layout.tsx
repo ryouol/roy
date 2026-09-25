@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { headers } from "next/headers";
-import { SiteAnalytics } from "@/components/consent";
+import { Analytics } from "@vercel/analytics/next";
 import { ScrollProvider } from "@/components/scroll-provider";
 import { siteUrl } from "@/lib/site";
 import "lenis/dist/lenis.css";
@@ -42,7 +42,7 @@ export default async function RootLayout({
       <body className={`${sans.variable} ${mono.variable}`}>
         <ScrollProvider />
         {children}
-        <SiteAnalytics />
+        <Analytics />
       </body>
     </html>
   );

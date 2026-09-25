@@ -42,8 +42,7 @@ The home page and `/scroll-demo` reuse `JourneyMotion`, `Story`, `Landscape`, an
 
 - Canonical origin defaults to the repository's existing `https://roy-nu-three.vercel.app`; optionally set server-side `SITE_URL`.
 - Nonce CSP requires request-time rendering. Images/fonts/scripts are same-origin; project and demo links open externally.
-- Vercel Web Analytics counts visits by default, with an opt-out on `/privacy`. Existing saved opt-outs are respected. No measurement ID is needed; Web Analytics must be enabled in the Vercel project before deploying. When preference storage is unavailable, changes apply until the page reloads.
-- `/privacy` explains the aggregate analytics collected and lets visitors change their browser preference.
+- Vercel Web Analytics loads on every page through the root layout, with no preference controls or browser-storage dependency. No measurement ID is needed; Web Analytics must be enabled in the Vercel project before deploying. Browser blockers or disabled JavaScript can prevent collection.
 - [Full phase checklist and outstanding input](docs/implementation-checklist.md)
 - [Main and previous PR directions](docs/branch-direction.md)
 - [Security audit](docs/security-audit.md)

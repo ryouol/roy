@@ -1,11 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const analyticsRoute =
-  /\/_vercel\/insights\/|https:\/\/va\.vercel-scripts\.com\//;
-const analyticsScripts =
-  'script[src*="/_vercel/insights/"], script[src*="va.vercel-scripts.com/"]';
-
 async function ready(page: Page, path = "/") {
   await page.goto(path);
   await page.evaluate(() => document.fonts.ready);
@@ -338,70 +333,6 @@ test("security headers and public assets remain available", async ({
   ]) {
     expect((await request.get(path)).ok()).toBe(true);
   }
-});
-
-test("analytics preferences live on Privacy and respect a saved opt-out", async ({
-  page,
-}) => {
-  await page.addInitScript(() => {
-    if (!localStorage.getItem("roy-analytics"))
-      localStorage.setItem("roy-analytics", "declined");
-  });
-  let analyticsRequests = 0;
-  await page.route(analyticsRoute, (route) => {
-    analyticsRequests++;
-    return route.fulfill({
-      status: 200,
-      contentType: "application/javascript",
-      body: "",
-    });
-  });
-  await ready(page);
-  await expect(page.locator(".consent, .privacy-settings")).toHaveCount(0);
-  expect(analyticsRequests).toBe(0);
-  await page.getByRole("link", { name: "Privacy", exact: true }).click();
-  await expect(page).toHaveURL(/\/privacy$/);
-  await expect(page.getByRole("status")).toHaveText("Analytics are Off.");
-  await page.getByRole("button", { name: "Turn on", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Analytics are On.");
-  await expect.poll(() => analyticsRequests).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Turn off", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Analytics are Off.");
-  await expect(page.locator(analyticsScripts)).toHaveCount(0);
-});
-
-test("analytics can be disabled when preference storage is blocked", async ({
-  page,
-}) => {
-  await page.route(analyticsRoute, (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: "application/javascript",
-      body: "",
-    }),
-  );
-  await page.addInitScript(() => {
-    localStorage.setItem("roy-analytics", "accepted");
-    Storage.prototype.setItem = () => {
-      throw new DOMException("Storage blocked", "SecurityError");
-    };
-    Storage.prototype.removeItem = () => {
-      throw new DOMException("Storage blocked", "SecurityError");
-    };
-  });
-  await ready(page, "/privacy");
-  await expect(page.getByRole("status")).toHaveText("Analytics are On.");
-  let reloads = 0;
-  page.on("framenavigated", (frame) => {
-    if (frame === page.mainFrame()) reloads++;
-  });
-  await page.getByRole("button", { name: "Turn off", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Analytics are Off.");
-  expect(reloads).toBe(0);
-  await page
-    .getByRole("link", { name: "Back to portfolio", exact: true })
-    .click();
-  await expect(page.locator(".consent, .privacy-settings")).toHaveCount(0);
 });
 
 for (const viewport of [

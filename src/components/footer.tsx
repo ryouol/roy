@@ -1,10 +1,8 @@
-import Link from "@/components/site-link";
 export function Footer() {
   return (
     <footer className="footer">
       <span>© {new Date().getFullYear()} Roy Luo</span>
       <nav aria-label="Footer">
-        <Link href="/privacy">Privacy</Link>
         <a href="#top">Back to top</a>
       </nav>
       <details className="terrain-credit">

@@ -817,29 +817,6 @@ body:has(.scene-webgl[data-ready="true"]) .projects-section {
 body:has(.scene-webgl:not([data-ready="true"])) .scroll-progress {
   display: none;
 }
-.privacy-preferences {
-  margin: 38px 0;
-  padding: 26px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.privacy-preferences h2 {
-  font-size: 24px;
-  letter-spacing: -0.04em;
-}
-.privacy-preferences [role="group"] {
-  display: flex;
-  gap: 12px;
-}
-.privacy-preferences button {
-  min-height: 44px;
-  padding: 10px 18px;
-  border: 1px solid #73869a;
-}
-.privacy-preferences button[aria-pressed="true"] {
-  background: #243c56;
-  color: white;
-}
 dialog {
   margin: auto;
   color: var(--ink);
